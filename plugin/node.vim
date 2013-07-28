@@ -35,21 +35,39 @@ function! s:find(name)
 	if a:name =~# '^\(/\|\./\|\.\./\)' | return a:name | endif
 
 	let path = b:node_root . "/node_modules/" . a:name
-	if isdirectory(path) | let path .= "/index" | endif
-
-	let path_with_suffix = s:findWithSuffix(path)
-	if !empty(path_with_suffix) | return path_with_suffix | endif
+	if isdirectory(path) | let path = s:pathFromDirectory(path) | endif
+	let path = s:pathWithSuffix(path)
+	if !empty(path) | return path | endif
 
 	return a:name
 endfunction
 
-function! s:findWithSuffix(path)
+function! s:pathFromDirectory(path)
+	" Node.js checks for package.json in every directory, not just the
+	" module's parent. According to:
+	" http://nodejs.org/api/modules.html#modules_all_together
+
+	if filereadable(a:path . "/package.json")
+		" Node expects main to refer to a file, so no directory resolving:
+		let main = s:pathFromPackage(a:path . "/package.json")
+		if !empty(main) | return a:path . "/" . main | endif
+	endif
+
+	return a:path . "/index"
+endfunction
+
+function! s:pathFromPackage(path)
+	for line in readfile(a:path)
+		if line !~# '"main"\s*:' | continue | endif
+		return matchstr(line, '"main"\s*:\s*"\zs[^"]\+\ze"')
+	endfor
+endfunction
+
+function! s:pathWithSuffix(path)
 	for suffix in ([""] + split(&suffixesadd, ","))
 		let path = a:path . suffix
 		if filereadable(path) | return path | endif
 	endfor
-
-	return ""
 endfunction
 
 augroup Node
