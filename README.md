@@ -31,9 +31,11 @@ set runtimepath^=~/.vim/bundle/node
 
 Using
 -----
-Currently Node for Vim does two things:
+Currently Node for Vim does these things:
 - Sets the filetype to JavaScript for files with Node's shebang (`#!`).
-- Appends `.js` to `suffixesadd` so you could `gf` on `require("./foo")` and get `foo.js` opened.
+- Adds full support for navigating to modules by using `gf` on `require("any-module")`, require("any-module/lib/utils") and so on.
+- Adds `.js` to `&suffixesadd` so you could use `gf` on `require("./foo")` to open `foo.js`.
+- Adds `.json` to `&suffixesadd` so you could use `gf` on `require("./package") and have it open package.json. Node does this too.
 
 Expect more to come soon and feel free to let me know what you're after right away.
 
