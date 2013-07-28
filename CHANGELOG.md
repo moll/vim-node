@@ -1,6 +1,6 @@
 ## Unreleased
 - Adds full support for navigating to module files by using `gf` on `require("any-module")`.
-- Adds `.json` to `&suffixesadd` so you could use `gf` on `require("./package") to open package.json.
+- Adds `.json` to `&suffixesadd` so you could use `gf` on `require("./package")` to open package.json.
 
 ## 0.1.1 (Jul 28, 2013)
 - Removes an innocent but forgotten debugging line.
