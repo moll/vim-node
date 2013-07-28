@@ -21,7 +21,7 @@ function! s:init(root)
 	let b:node_root = a:root
 
 	if &filetype == "javascript"
-		setl suffixesadd+=.js
+		setl suffixesadd+=.js,.json
 		exe "setl includeexpr=" . s:snr() . "find(v:fname)"
 	endif
 endfunction
