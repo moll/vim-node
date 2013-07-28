@@ -1,5 +1,5 @@
 NAME := node
-VERSION := 0.1.0
+VERSION := 0.1.1
 ID := 4674
 
 love:

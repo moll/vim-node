@@ -1,3 +1,6 @@
+## 0.1.1 (Jul 28, 2013)
+- Removes an innocent but forgotten debugging line.
+
 ## 0.1.0 (Jul 28, 2013)
 - First release to get the nodeballs rolling.
 - Sets the filetype to JavaScript for files with Node's shebang (`#!`).
