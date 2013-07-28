@@ -48,15 +48,20 @@ function! s:pathFromDirectory(path)
 	" http://nodejs.org/api/modules.html#modules_all_together
 
 	if filereadable(a:path . "/package.json")
-		" Node expects main to refer to a file, so no directory resolving:
-		let main = s:pathFromPackage(a:path . "/package.json")
-		if !empty(main) | return a:path . "/" . main | endif
+		let main = s:mainFromPackage(a:path . "/package.json")
+
+		if !empty(main)
+			" Turns out, even though Node says it does not support directories in
+			" main, it does.
+			let path = a:path . "/" . main 
+			return isdirectory(path) ? s:pathFromDirectory(path) : path
+		endif
 	endif
 
 	return a:path . "/index"
 endfunction
 
-function! s:pathFromPackage(path)
+function! s:mainFromPackage(path)
 	for line in readfile(a:path)
 		if line !~# '"main"\s*:' | continue | endif
 		return matchstr(line, '"main"\s*:\s*"\zs[^"]\+\ze"')
