@@ -1,4 +1,4 @@
-if exists("g:loaded_node") || &cp | finish | endif
+if exists("g:loaded_node") || &cp || v:version < 700 | finish | endif
 let g:loaded_node = 1
 
 function! s:detect(path)
