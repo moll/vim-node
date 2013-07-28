@@ -12,6 +12,7 @@ This is just the first release to get the nodes rolling. If you've collected gre
 - Use `gf` on `require("./foo")` to open `foo.js`.
 - Use `gf` on `require("./package")` and have it open package.json.
 - Automatically sets the filetype to JavaScript for files with Node's shebang (`#!`).
+- Use `[I` etc. to look for a keyword in required files (preliminary support via Vim's `&include`).
 
 Expect more to come soon and feel free to let me know what you're after!
 
@@ -44,6 +45,7 @@ Using
 Open any JavaScript file inside a Node project and you're all set.
 
 - Use `gf` on `require()` to jump to source files.
+- Use `[I` on any keyword to look for it in the current and required files.
 
 
 License
