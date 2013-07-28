@@ -5,12 +5,13 @@ It's the Node equivalent of [Rails.vim (vimscript #1567)](https://github.com/tpo
 
 This is just the first release to get the nodes rolling. If you've collected great helpers and shortcuts that help you work with Node, please share them via [email](mailto:andri@dot.ee), [Twitter](https://twitter.com/theml) or [GitHub issues](https://github.com/moll/vim-node/issues) so we could incorporate them here, too! Thanks!
 
-### Currently Node for Vim does these things:
+### Already Node for Vim gives you:
 
-- Sets the filetype to JavaScript for files with Node's shebang (`#!`).
-- Adds full support for navigating to modules by using `gf` on `require("any-module")`, require("any-module/lib/utils") and so on.
-- Adds `.js` to `&suffixesadd` so you could use `gf` on `require("./foo")` to open `foo.js`.
-- Adds `.json` to `&suffixesadd` so you could use `gf` on `require("./package") and have it open package.json. Node does this too.
+- Use `gf` on `require("module")` to navigate to the module's main file (parsed for you from `package.json`).
+- Use `gf` on `require("module/lib/utils")` and open files inside the module.
+- Use `gf` on `require("./foo")` to open `foo.js`.
+- Use `gf` on `require("./package")` and have it open package.json.
+- Automatically sets the filetype to JavaScript for files with Node's shebang (`#!`).
 
 Expect more to come soon and feel free to let me know what you're after!
 
@@ -41,6 +42,8 @@ set runtimepath^=~/.vim/bundle/node
 Using
 -----
 Open any JavaScript file inside a Node project and you're all set.
+
+- Use `gf` on `require()` to jump to source files.
 
 
 License
