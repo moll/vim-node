@@ -34,15 +34,22 @@ function! s:find(name)
 	" Skip relative or absolute paths.
 	if a:name =~# '^\(\./\|\/\)' | return a:name | endif
 
-	let module = b:node_root . "/node_modules/" . a:name
+	let path = b:node_root . "/node_modules/" . a:name
+	if isdirectory(path) | return path . "/index.js" | endif
 
-	if isdirectory(module)
-		return module . "/index.js"
-	elseif filereadable(module)
-		return module
-	endif
+	let path_with_suffix = s:findWithSuffix(path)
+	if !empty(path_with_suffix) | return path_with_suffix | endif
 
 	return a:name
+endfunction
+
+function! s:findWithSuffix(path)
+	for suffix in ([""] + split(&suffixesadd, ","))
+		let path = a:path . suffix
+		if filereadable(path) | return path | endif
+	endfor
+
+	return ""
 endfunction
 
 augroup Node
