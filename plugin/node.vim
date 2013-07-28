@@ -32,7 +32,7 @@ endfunction
 
 function! s:find(name)
 	" Skip relative or absolute paths.
-	if a:name =~# '^\(\./\|\/\)' | return a:name | endif
+	if a:name =~# '^\(/\|\./\|\.\./\)' | return a:name | endif
 
 	let path = b:node_root . "/node_modules/" . a:name
 	if isdirectory(path) | let path .= "/index" | endif
