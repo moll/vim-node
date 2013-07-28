@@ -1,3 +1,6 @@
+## Unreleased
+- Adds `&include` pattern so Vim can recognize included/required files, e.g. for jumping to declarations with `gD`.
+
 ## 0.2.0 (Jul 28, 2013)
 - Adds full support for navigating to module files by using `gf` on `require("any-module")`.
 - Adds `.json` to `&suffixesadd` so you could use `gf` on `require("./package")` to open package.json.
