@@ -12,7 +12,6 @@ function! s:detect(path)
 		if is_node | return s:init(path) | en
 
 		let parent = fnamemodify(path, ":h")
-		echom parent
 		if parent == path | return | en 
 		let path = parent
 	endwhile
