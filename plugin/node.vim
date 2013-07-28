@@ -35,7 +35,7 @@ function! s:find(name)
 	if a:name =~# '^\(\./\|\/\)' | return a:name | endif
 
 	let path = b:node_root . "/node_modules/" . a:name
-	if isdirectory(path) | return path . "/index.js" | endif
+	if isdirectory(path) | let path .= "/index" | endif
 
 	let path_with_suffix = s:findWithSuffix(path)
 	if !empty(path_with_suffix) | return path_with_suffix | endif
