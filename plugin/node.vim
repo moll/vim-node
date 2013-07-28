@@ -22,8 +22,8 @@ function! s:init(root)
 
 	if &filetype == "javascript"
 		setl suffixesadd+=.js,.json
-		exe "setl include=" . escape('\<require(\(["'']\)\zs[^\1]\+\ze\1', '"\')
-		exe "setl includeexpr=" . s:snr() . "find(v:fname)"
+		let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
+		let &l:includeexpr = s:snr() . "find(v:fname)"
 	endif
 endfunction
 
