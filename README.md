@@ -1,7 +1,7 @@
 Node for Vim
 ============
 Tools to make Vim superb for developing with Node.js.  
-It's the Node equivalent of [Rails.vim (Vimscript #1567)](https://github.com/tpope/vim-rails) and [Rake.vim (Vimscript #3669)](https://github.com/tpope/vim-rake).
+It's the Node equivalent of [Rails.vim (vimscript #1567)](https://github.com/tpope/vim-rails) and [Rake.vim (vimscript #3669)](https://github.com/tpope/vim-rake).
 
 This is just the first release to get the nodes rolling. If you've collected great helpers and shortcuts that help you work with Node, please share them via [email](mailto:andri@dot.ee), [Twitter](https://twitter.com/theml) or [GitHub issues](https://github.com/moll/vim-node/issues) so we could incorporate them here, too! Thanks!
 
