@@ -5,6 +5,9 @@ ID := 4674
 love:
 	@echo "Feel like makin' love."
 
+autotest:
+	@bundle exec guard start --no-interactions
+
 pack:
 	rm -rf "$(NAME)-$(VERSION).zip" 
 	zip -r "$(NAME)-$(VERSION).zip" * -x Makefile -x "*.zip" -x "./test/*"
@@ -15,4 +18,4 @@ publish:
 tag:
 	git tag "v$(VERSION)"
 	
-.PHONY: love pack publish tag
+.PHONY: love autotest pack publish tag
