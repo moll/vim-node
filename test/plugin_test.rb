@@ -8,7 +8,7 @@ describe "Plugin" do
       $vim.echo("b:node_root").must_equal File.realpath(dir)
     end
 
-    it "should be set when in same directory with package.json" do
+    it "must be set when in same directory with package.json" do
       Dir.mktmpdir do |dir|
         FileUtils.touch File.join(dir, "package.json")
         $vim.command("cd #{dir}")
@@ -16,7 +16,7 @@ describe "Plugin" do
       end
     end
 
-    it "should be set when in same directory with node_modules" do
+    it "must be set when in same directory with node_modules" do
       Dir.mktmpdir do |dir|
         Dir.mkdir File.join(dir, "node_modules")
         $vim.command("cd #{dir}")
@@ -24,7 +24,7 @@ describe "Plugin" do
       end
     end
 
-    it "should be set when ancestor directory has package.json" do
+    it "must be set when ancestor directory has package.json" do
       Dir.mktmpdir do |dir|
         FileUtils.touch File.join(dir, "package.json")
 
@@ -35,7 +35,7 @@ describe "Plugin" do
       end
     end
 
-    it "should be set when ancestor directory has node_modules" do
+    it "must be set when ancestor directory has node_modules" do
       Dir.mktmpdir do |dir|
         Dir.mkdir File.join(dir, "node_modules")
 
@@ -46,9 +46,10 @@ describe "Plugin" do
       end
     end
 
-    it "should detect Node root also for other filetypes" do
+    it "must detect Node root also for other filetypes" do
       Dir.mktmpdir do |dir|
         FileUtils.touch File.join(dir, "package.json")
+
         $vim.command("cd #{dir}")
         $vim.edit "README.txt"
         $vim.echo("b:node_root").must_equal File.realpath(dir)
