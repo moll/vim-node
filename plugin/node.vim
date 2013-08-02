@@ -79,4 +79,4 @@ endfunction
 augroup Node
 	au!
 	au BufRead,BufNewFile * call s:detect(expand("<amatch>:p"))
-augroup END
+augroup end
