@@ -8,3 +8,6 @@ let &runtimepath = expand("<sfile>:p:h:h") . "," . &runtimepath
 filetype plugin on
 filetype indent on
 syntax on
+
+set lines=20
+set columns=80
