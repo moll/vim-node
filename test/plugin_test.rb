@@ -114,6 +114,17 @@ describe "Plugin" do
       File.realpath(bufname).must_equal package
     end
 
+    it "must open ./index.js given ../index" do
+      touch File.join(@dir, "index.js")
+      touch File.join(@dir, "lib/requires.js"), %(require("../index")) 
+
+      $vim.edit File.join(@dir, "lib/requires.js")
+      $vim.normal "f.gf"
+
+      bufname = $vim.echo(%(bufname("%")))
+      File.realpath(bufname).must_equal File.join(@dir, "index.js")
+    end
+
     it "must open ./node_modules/foo/index.js given foo" do
       touch File.join(@dir, "requires.js"), %(require("foo")) 
       index = File.join(@dir, "node_modules", "foo", "index.js")
