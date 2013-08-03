@@ -1,6 +1,13 @@
 require_relative "./helper"
+require "json"
 
 describe "Plugin" do
+  def touch(path, contents = nil)
+    FileUtils.mkdir_p File.dirname(path)
+    return FileUtils.touch(path) if contents.nil? || contents.empty?
+    File.open(path, "w") {|f| f.write contents }
+  end
+
   describe "b:node_root" do
     it "must be set when in same directory with package.json" do
       Dir.mktmpdir do |dir|
@@ -78,7 +85,6 @@ describe "Plugin" do
         FileUtils.mkdir_p nested
         FileUtils.touch File.join(nested, "package.json")
 
-        # Mac has the temporary directory symlinked, so need File.realpath.
         $vim.edit File.join(nested, "index_test.js")
         $vim.echo("b:node_root").must_equal nested
       end
@@ -88,36 +94,65 @@ describe "Plugin" do
   def project(&block)
     Dir.mktmpdir do |dir|
       FileUtils.touch File.join(dir, "package.json")
-      Dir.chdir dir, &block
+      # Mac has the temporary directory symlinked, so need File.realpath to
+      # match the paths that Vim gives.
+      Dir.chdir File.realpath(dir), &block
     end
   end
 
   describe "Goto file" do
     it "must open ./other.js given ./other" do
       project do |dir|
-        File.open("index.js", "w") {|f| f.write %(require("./other")) }
+        touch "index.js", %(require("./other")) 
         other = File.join(dir, "other.js")
-        FileUtils.touch other
+        touch other
 
         $vim.edit File.join(dir, "index.js")
         $vim.normal "f.gf"
 
         bufname = $vim.echo(%(bufname("%")))
-        File.realpath(bufname).must_equal File.realpath(other)
+        File.realpath(bufname).must_equal other
       end
     end
 
     it "must open ./package.json given ./package" do
       project do |dir|
-        File.open("index.js", "w") {|f| f.write %(require("./package")) }
+        touch "index.js", %(require("./package")) 
         package = File.join(dir, "package.json")
-        FileUtils.touch package
+        touch package
 
         $vim.edit File.join(dir, "index.js")
         $vim.normal "f.gf"
 
         bufname = $vim.echo(%(bufname("%")))
-        File.realpath(bufname).must_equal File.realpath(package)
+        File.realpath(bufname).must_equal package
+      end
+    end
+
+    it "must open ./node_modules/foo/index.js given foo" do
+      project do |dir|
+        touch "requires.js", %(require("foo")) 
+        index = File.join(dir, "node_modules", "foo", "index.js")
+        touch index
+
+        $vim.edit File.join(dir, "requires.js")
+        $vim.normal "$hhgf"
+        $vim.echo(%(bufname("%"))).must_equal index
+      end
+    end
+
+    it "must open ./node_modules/foo/other.js given foo's package.json" do
+      project do |dir|
+        touch "requires.js", %(require("foo")) 
+
+        mod = File.join(dir, "node_modules", "foo")
+        other = File.join(mod, "other.js")
+        touch other
+        touch File.join(mod, "package.json"), JSON.dump(:main => "other.js")
+
+        $vim.edit File.join(dir, "requires.js")
+        $vim.normal "$hhgf"
+        $vim.echo(%(bufname("%"))).must_equal other
       end
     end
   end
