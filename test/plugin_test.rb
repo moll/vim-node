@@ -84,4 +84,41 @@ describe "Plugin" do
       end
     end
   end
+
+  def project(&block)
+    Dir.mktmpdir do |dir|
+      FileUtils.touch File.join(dir, "package.json")
+      Dir.chdir dir, &block
+    end
+  end
+
+  describe "Goto file" do
+    it "must open ./other.js given ./other" do
+      project do |dir|
+        File.open("index.js", "w") {|f| f.write %(require("./other")) }
+        other = File.join(dir, "other.js")
+        FileUtils.touch other
+
+        $vim.edit File.join(dir, "index.js")
+        $vim.normal "f.gf"
+
+        bufname = $vim.echo(%(bufname("%")))
+        File.realpath(bufname).must_equal File.realpath(other)
+      end
+    end
+
+    it "must open ./package.json given ./package" do
+      project do |dir|
+        File.open("index.js", "w") {|f| f.write %(require("./package")) }
+        package = File.join(dir, "package.json")
+        FileUtils.touch package
+
+        $vim.edit File.join(dir, "index.js")
+        $vim.normal "f.gf"
+
+        bufname = $vim.echo(%(bufname("%")))
+        File.realpath(bufname).must_equal File.realpath(package)
+      end
+    end
+  end
 end
