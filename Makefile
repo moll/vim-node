@@ -1,4 +1,5 @@
 NAME := node
+TITLE := Node.vim
 VERSION := 0.2.0
 ID := 4674
 
