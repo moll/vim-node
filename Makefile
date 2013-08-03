@@ -6,7 +6,7 @@ ID := 4674
 love:
 	@echo "Feel like makin' love."
 
-test: $(shell find ./ -name "*_test.rb")
+test: $(shell find . -name "*_test.rb")
 	@bundle exec ruby -e "ARGV.each(&method(:require))" $(addprefix ./,$^)
 
 autotest:
