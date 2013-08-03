@@ -92,26 +92,24 @@ describe "Plugin" do
 
     it "must open ./other.js given ./other" do
       touch File.join(@dir, "index.js"), %(require("./other")) 
-      other = File.join(@dir, "other.js")
-      touch other
+      touch File.join(@dir, "other.js")
 
       $vim.edit File.join(@dir, "index.js")
       $vim.normal "f.gf"
 
       bufname = $vim.echo(%(bufname("%")))
-      File.realpath(bufname).must_equal other
+      File.realpath(bufname).must_equal File.join(@dir, "other.js")
     end
 
     it "must open ./package.json given ./package" do
       touch File.join(@dir, "index.js"), %(require("./package")) 
-      package = File.join(@dir, "package.json")
-      touch package
+      touch File.join(@dir, "package.json")
 
       $vim.edit File.join(@dir, "index.js")
       $vim.normal "f.gf"
 
       bufname = $vim.echo(%(bufname("%")))
-      File.realpath(bufname).must_equal package
+      File.realpath(bufname).must_equal File.join(@dir, "package.json")
     end
 
     it "must open ./index.js given ../index" do
