@@ -182,6 +182,15 @@ describe "Plugin" do
       $vim.normal "$hhgf"
       File.realpath($vim.echo(%(bufname("%")))).must_equal other
     end
+
+    it "must open non-JavaScript files as is" do
+      touch File.join(@dir, "index.js"), %(// Please read README.txt)
+      touch File.join(@dir, "README.txt")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.normal "$gf"
+      $vim.echo(%(bufname("%"))).must_equal File.join(@dir, "README.txt")
+    end
   end
 
   describe "Include file search pattern" do
