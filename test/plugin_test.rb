@@ -130,14 +130,9 @@ describe "Plugin" do
       $vim.echo(%(bufname("%"))).must_equal index
     end
 
-    # When package.json refers to a regular file.
-    it "must open ./node_modules/foo/other.js given foo's package.json" do
-      touch "requires.js", %(require("foo")) 
-
-      mod = File.join(@dir, "node_modules", "foo")
-      touch File.join(mod, "package.json"), JSON.dump(:main => "other.js")
-
-      other = File.join(mod, "other.js")
+    it "must open ./node_modules/foo/other.js given foo/other" do
+      touch "requires.js", %(require("foo/other")) 
+      other = File.join(@dir, "node_modules", "foo", "other.js")
       touch other
 
       $vim.edit File.join(@dir, "requires.js")
@@ -145,19 +140,44 @@ describe "Plugin" do
       $vim.echo(%(bufname("%"))).must_equal other
     end
 
-    # When package.json refers to a directory.
-    it "must open ./node_modules/foo/lib/index.js given foo's package.json" do
+    it "must open ./node_modules/foo/other.js given foo/other.js" do
+      touch "requires.js", %(require("foo/other.js")) 
+      other = File.join(@dir, "node_modules", "foo", "other.js")
+      touch other
+
+      $vim.edit File.join(@dir, "requires.js")
+      $vim.normal "$hhgf"
+      $vim.echo(%(bufname("%"))).must_equal other
+    end
+
+    # When package.json refers to a regular file.
+    it "must open ./node_modules/foo/other.js given main as other.js" do
       touch "requires.js", %(require("foo")) 
 
       mod = File.join(@dir, "node_modules", "foo")
-      touch File.join(mod, "package.json"), JSON.dump(:main => "lib")
+      touch File.join(mod, "package.json"), JSON.dump(:main => "./other.js")
+
+      other = File.join(mod, "other.js")
+      touch other
+
+      $vim.edit File.join(@dir, "requires.js")
+      $vim.normal "$hhgf"
+      File.realpath($vim.echo(%(bufname("%")))).must_equal other
+    end
+
+    # When package.json refers to a directory.
+    it "must open ./node_modules/foo/lib/index.js given main as lib" do
+      touch "requires.js", %(require("foo")) 
+
+      mod = File.join(@dir, "node_modules", "foo")
+      touch File.join(mod, "package.json"), JSON.dump(:main => "./lib")
 
       other = File.join(mod, "lib/index.js")
       touch other
 
       $vim.edit File.join(@dir, "requires.js")
       $vim.normal "$hhgf"
-      $vim.echo(%(bufname("%"))).must_equal other
+      File.realpath($vim.echo(%(bufname("%")))).must_equal other
     end
   end
 end
