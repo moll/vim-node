@@ -14,7 +14,7 @@ describe "Autoloaded" do
       touch File.join(@dir, "other.js")
 
       $vim.edit File.join(@dir, "index.js")
-      $vim.normal "f.gf"
+      $vim.feedkeys "f.gf"
 
       bufname = $vim.echo(%(bufname("%")))
       File.realpath(bufname).must_equal File.join(@dir, "other.js")
@@ -25,7 +25,7 @@ describe "Autoloaded" do
       touch File.join(@dir, "package.json")
 
       $vim.edit File.join(@dir, "index.js")
-      $vim.normal "f.gf"
+      $vim.feedkeys "f.gf"
 
       bufname = $vim.echo(%(bufname("%")))
       File.realpath(bufname).must_equal File.join(@dir, "package.json")
@@ -36,7 +36,7 @@ describe "Autoloaded" do
       touch File.join(@dir, "lib/requires.js"), %(require("../index")) 
 
       $vim.edit File.join(@dir, "lib/requires.js")
-      $vim.normal "f.gf"
+      $vim.feedkeys "f.gf"
 
       bufname = $vim.echo(%(bufname("%")))
       File.realpath(bufname).must_equal File.join(@dir, "index.js")
@@ -48,7 +48,7 @@ describe "Autoloaded" do
       touch index
 
       $vim.edit File.join(@dir, "requires.js")
-      $vim.normal "$hhgf"
+      $vim.feedkeys "$hhgf"
       $vim.echo(%(bufname("%"))).must_equal index
     end
 
@@ -58,7 +58,7 @@ describe "Autoloaded" do
       touch other
 
       $vim.edit File.join(@dir, "requires.js")
-      $vim.normal "$hhgf"
+      $vim.feedkeys "$hhgf"
       $vim.echo(%(bufname("%"))).must_equal other
     end
 
@@ -68,7 +68,7 @@ describe "Autoloaded" do
       touch other
 
       $vim.edit File.join(@dir, "requires.js")
-      $vim.normal "$hhgf"
+      $vim.feedkeys "$hhgf"
       $vim.echo(%(bufname("%"))).must_equal other
     end
 
@@ -83,7 +83,7 @@ describe "Autoloaded" do
       touch other
 
       $vim.edit File.join(@dir, "requires.js")
-      $vim.normal "$hhgf"
+      $vim.feedkeys "$hhgf"
       File.realpath($vim.echo(%(bufname("%")))).must_equal other
     end
 
@@ -98,7 +98,7 @@ describe "Autoloaded" do
       touch other
 
       $vim.edit File.join(@dir, "requires.js")
-      $vim.normal "$hhgf"
+      $vim.feedkeys "$hhgf"
       File.realpath($vim.echo(%(bufname("%")))).must_equal other
     end
 
@@ -107,7 +107,7 @@ describe "Autoloaded" do
       touch File.join(@dir, "README.txt")
 
       $vim.edit File.join(@dir, "index.js")
-      $vim.normal "$gf"
+      $vim.feedkeys "$gf"
       $vim.echo(%(bufname("%"))).must_equal File.join(@dir, "README.txt")
     end
   end
