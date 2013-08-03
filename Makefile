@@ -5,6 +5,9 @@ ID := 4674
 love:
 	@echo "Feel like makin' love."
 
+test:
+	@bundle exec ruby -e "ARGV.each(&method(:require))" ./test/**/*_test.rb
+
 autotest:
 	@bundle exec guard start --no-interactions
 
@@ -18,4 +21,4 @@ publish:
 tag:
 	git tag "v$(VERSION)"
 	
-.PHONY: love autotest pack publish tag
+.PHONY: love test autotest pack publish tag
