@@ -5,6 +5,12 @@ ID := 4674
 love:
 	@echo "Feel like makin' love."
 
+test: $(shell find ./ -name "*_test.rb")
+	@bundle exec ruby -e "ARGV.each(&method(:require))" $(addprefix ./,$^)
+
+autotest:
+	@bundle exec guard start --no-interactions
+
 pack:
 	rm -rf "$(NAME)-$(VERSION).zip" 
 	zip -r "$(NAME)-$(VERSION).zip" * -x Makefile -x "*.zip" -x "./test/*"
@@ -15,4 +21,4 @@ publish:
 tag:
 	git tag "v$(VERSION)"
 	
-.PHONY: love pack publish tag
+.PHONY: love test autotest pack publish tag

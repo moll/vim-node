@@ -1,0 +1,13 @@
+set nocompatible
+set noswapfile nobackup
+
+set runtimepath-=~/.vim
+set runtimepath-=~/.vim/after
+let &runtimepath = expand("<sfile>:p:h:h") . "," . &runtimepath
+
+filetype plugin on
+filetype indent on
+syntax on
+
+set lines=24 columns=80
+winpos 1337 0
