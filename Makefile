@@ -5,8 +5,8 @@ ID := 4674
 love:
 	@echo "Feel like makin' love."
 
-test:
-	@bundle exec ruby -e "ARGV.each(&method(:require))" ./test/**/*_test.rb
+test: $(shell find ./ -name "*_test.rb")
+	@bundle exec ruby -e "ARGV.each(&method(:require))" $(addprefix ./,$^)
 
 autotest:
 	@bundle exec guard start --no-interactions
