@@ -88,16 +88,10 @@ describe "Plugin" do
   describe "Goto file" do
     before do
       FileUtils.touch File.join(@dir, "package.json")
-      Dir.chdir File.realpath(@dir)
-      @oldwd = Dir.getwd
-    end
-
-    after do
-      Dir.chdir @oldwd
     end
 
     it "must open ./other.js given ./other" do
-      touch "index.js", %(require("./other")) 
+      touch File.join(@dir, "index.js"), %(require("./other")) 
       other = File.join(@dir, "other.js")
       touch other
 
@@ -109,7 +103,7 @@ describe "Plugin" do
     end
 
     it "must open ./package.json given ./package" do
-      touch "index.js", %(require("./package")) 
+      touch File.join(@dir, "index.js"), %(require("./package")) 
       package = File.join(@dir, "package.json")
       touch package
 
@@ -121,7 +115,7 @@ describe "Plugin" do
     end
 
     it "must open ./node_modules/foo/index.js given foo" do
-      touch "requires.js", %(require("foo")) 
+      touch File.join(@dir, "requires.js"), %(require("foo")) 
       index = File.join(@dir, "node_modules", "foo", "index.js")
       touch index
 
@@ -131,7 +125,7 @@ describe "Plugin" do
     end
 
     it "must open ./node_modules/foo/other.js given foo/other" do
-      touch "requires.js", %(require("foo/other")) 
+      touch File.join(@dir, "requires.js"), %(require("foo/other")) 
       other = File.join(@dir, "node_modules", "foo", "other.js")
       touch other
 
@@ -141,7 +135,7 @@ describe "Plugin" do
     end
 
     it "must open ./node_modules/foo/other.js given foo/other.js" do
-      touch "requires.js", %(require("foo/other.js")) 
+      touch File.join(@dir, "requires.js"), %(require("foo/other.js")) 
       other = File.join(@dir, "node_modules", "foo", "other.js")
       touch other
 
@@ -152,7 +146,7 @@ describe "Plugin" do
 
     # When package.json refers to a regular file.
     it "must open ./node_modules/foo/other.js given main as other.js" do
-      touch "requires.js", %(require("foo")) 
+      touch File.join(@dir, "requires.js"), %(require("foo")) 
 
       mod = File.join(@dir, "node_modules", "foo")
       touch File.join(mod, "package.json"), JSON.dump(:main => "./other.js")
@@ -167,7 +161,7 @@ describe "Plugin" do
 
     # When package.json refers to a directory.
     it "must open ./node_modules/foo/lib/index.js given main as lib" do
-      touch "requires.js", %(require("foo")) 
+      touch File.join(@dir, "requires.js"), %(require("foo")) 
 
       mod = File.join(@dir, "node_modules", "foo")
       touch File.join(mod, "package.json"), JSON.dump(:main => "./lib")
