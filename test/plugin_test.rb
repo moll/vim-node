@@ -183,4 +183,23 @@ describe "Plugin" do
       File.realpath($vim.echo(%(bufname("%")))).must_equal other
     end
   end
+
+  describe "Include file search pattern" do
+    before do
+      FileUtils.touch File.join(@dir, "package.json")
+    end
+
+    it "must find matches given a require" do
+      definition = %(module.exports = function awesome() { return 1337 })
+
+      touch File.join(@dir, "index.js"), <<-end.gsub(/^\s+/, "")
+        var awesome = require("foo")
+        awesome()
+      end
+      touch File.join(@dir, "node_modules", "foo", "index.js"), definition
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.command("normal G[i").must_equal definition
+    end
+  end
 end
