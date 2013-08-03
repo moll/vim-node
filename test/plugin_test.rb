@@ -130,13 +130,30 @@ describe "Plugin" do
       $vim.echo(%(bufname("%"))).must_equal index
     end
 
+    # When package.json refers to a regular file.
     it "must open ./node_modules/foo/other.js given foo's package.json" do
       touch "requires.js", %(require("foo")) 
 
       mod = File.join(@dir, "node_modules", "foo")
+      touch File.join(mod, "package.json"), JSON.dump(:main => "other.js")
+
       other = File.join(mod, "other.js")
       touch other
-      touch File.join(mod, "package.json"), JSON.dump(:main => "other.js")
+
+      $vim.edit File.join(@dir, "requires.js")
+      $vim.normal "$hhgf"
+      $vim.echo(%(bufname("%"))).must_equal other
+    end
+
+    # When package.json refers to a directory.
+    it "must open ./node_modules/foo/lib/index.js given foo's package.json" do
+      touch "requires.js", %(require("foo")) 
+
+      mod = File.join(@dir, "node_modules", "foo")
+      touch File.join(mod, "package.json"), JSON.dump(:main => "lib")
+
+      other = File.join(mod, "lib/index.js")
+      touch other
 
       $vim.edit File.join(@dir, "requires.js")
       $vim.normal "$hhgf"
