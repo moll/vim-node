@@ -224,6 +224,28 @@ describe "Autoloaded" do
       bufname = File.realpath($vim.echo(%(bufname("%"))))
       bufname.must_equal File.join(mod, "lib/index.js")
     end
+
+    it "must show error when opening a non-existent file" do
+      touch File.join(@dir, "index.js"), %(require("new"))
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.command(%(let v:errmsg = ""))
+      $vim.feedkeys "$hhgf"
+
+      error = $vim.command("verbose let v:errmsg").sub(/^\S+\s*/, "")
+      error.must_equal "E447: Can't find file \"new\" in path"
+    end
+
+    it "must not show an error when opening nothing" do
+      touch File.join(@dir, "index.js"), %("")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.command(%(let v:errmsg = ""))
+      $vim.feedkeys "gf"
+
+      error = $vim.command("verbose let v:errmsg").sub(/^\S+\s*/, "")
+      error.must_equal ""
+    end
   end
 
   describe "Include file search pattern" do

@@ -36,6 +36,7 @@ function! s:find(name, from)
 endfunction
 
 function! s:edit(name, from)
+	if empty(a:name) | return | endif
 	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
 
 	" If just a plain filename with no directory part, check if it exists:
@@ -45,7 +46,11 @@ function! s:edit(name, from)
 		let path = s:find(a:name, dir)
 	end
 
-	if !empty(path) | exe "edit " . fnameescape(path) | endif
+	if empty(path)
+		return s:error("E447: Can't find file \"" . a:name . "\" in path")
+	endif
+
+	exe "edit " . fnameescape(path)
 endfunction
 
 function! s:pathFromDirectory(path)
@@ -79,4 +84,12 @@ function! s:pathWithSuffix(path)
 		let path = a:path . suffix
 		if filereadable(path) | return path | endif
 	endfor
+endfunction
+
+" Using the built-in :echoerr prints a stacktrace, which isn't that nice.
+function! s:error(msg)
+	echohl ErrorMsg
+	echomsg a:msg
+	echohl NONE
+	let v:errmsg = a:msg
 endfunction
