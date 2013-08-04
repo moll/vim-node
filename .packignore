@@ -1,0 +1,6 @@
+/Makefile
+/test/*
+/Gemfile
+/Gemfile.lock
+/Guardfile
+/*.zip

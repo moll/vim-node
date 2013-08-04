@@ -14,7 +14,7 @@ autotest:
 
 pack:
 	rm -rf "$(NAME)-$(VERSION).zip" 
-	zip -r "$(NAME)-$(VERSION).zip" * -x Makefile -x "*.zip" -x "./test/*"
+	zip -r "$(NAME)-$(VERSION).zip" * -x @.packignore
 
 publish:
 	open "http://www.vim.org/scripts/add_script_version.php?script_id=$(ID)"
