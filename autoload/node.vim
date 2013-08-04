@@ -30,28 +30,40 @@ function! s:find(name, from)
 		let path = b:node_root . "/node_modules/" . a:name
 	endif
 
-	if isdirectory(path) | let path = s:pathFromDirectory(path) | endif
-	let path = s:pathWithSuffix(path)
-	if !empty(path) | return path | endif
+	return s:findByPath(path)
+endfunction
+
+function! s:findByPath(path)
+	" Node checks for files *before* directories, so see if the path does not
+	" end with a slash or dots and try to match it as a file.
+	" TODO: Add \v
+	if a:path !~# '\v/(\.\.?/?)?$'
+		let path_with_suffix = s:pathWithSuffix(a:path)
+		if !empty(path_with_suffix) | return path_with_suffix | endif
+	endif
+
+	if isdirectory(a:path) | return s:pathFromDirectory(a:path) | endif
 endfunction
 
 function! s:pathFromDirectory(path)
 	" Node.js checks for package.json in every directory, not just the
 	" module's parent. According to:
 	" http://nodejs.org/api/modules.html#modules_all_together
-
 	if filereadable(a:path . "/package.json")
+		" Turns out, even though Node says it does not support directories in
+		" main, it does.
+		" NOTE: If package.json's main is empty or refers to a non-existent file,
+		" ./index.js is still tried.
 		let main = s:mainFromPackage(a:path . "/package.json")
-
-		if !empty(main)
-			" Turns out, even though Node says it does not support directories in
-			" main, it does.
-			let path = a:path . "/" . main 
-			return isdirectory(path) ? s:pathFromDirectory(path) : path
-		endif
+		if !empty(main) && main != "" | return s:findByPath(a:path."/" . main) | en
 	endif
 
-	return a:path . "/index"
+	" We need to check for ./index.js's existence here rather than leave it to
+	" the caller, because otherwise we can't distinguish if this ./index was
+	" from the directory defaulting to ./index.js or it was the package.json
+	" which referred to ./index, which in itself could mean both ./index.js and
+	" ./index/index.js.
+	return s:pathWithSuffix(a:path . "/index")
 endfunction
 
 function! s:mainFromPackage(path)

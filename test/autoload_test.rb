@@ -154,6 +154,18 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "index.js")
     end
 
+    it "must not open ./index/index.js given ." do
+      touch File.join(@dir, "other.js"), %(require(".")) 
+      touch File.join(@dir, "index", "index.js")
+
+      $vim.edit File.join(@dir, "other.js")
+      $vim.command(%(let v:errmsg = ""))
+      $vim.feedkeys "f.gf"
+
+      error = $vim.command("let v:errmsg").sub(/^\S+\s*/, "")
+      error.must_equal %(E447: Can't find file "." in path)
+    end
+
     it "must open ./lib/index.js given ./lib" do
       touch File.join(@dir, "index.js"), %(require("./lib")) 
       touch File.join(@dir, "lib", "index.js")
@@ -173,6 +185,51 @@ describe "Autoloaded" do
       $vim.feedkeys "f.gf"
       bufname = File.realpath($vim.echo(%(bufname("%"))))
       bufname.must_equal File.join(@dir, "lib", "other.js")
+    end
+
+    it "must not open ./.js given ./" do
+      touch File.join(@dir, "other.js"), %(require("./")) 
+      touch File.join(@dir, ".js")
+
+      $vim.edit File.join(@dir, "other.js")
+      $vim.command(%(let v:errmsg = ""))
+      $vim.feedkeys "f.gf"
+      error = $vim.command("let v:errmsg").sub(/^\S+\s*/, "")
+      error.must_equal %(E447: Can't find file "./" in path)
+    end
+
+    it "must open ./lib/index.js if package.json's main is empty" do
+      touch File.join(@dir, "index.js"), %(require("./lib")) 
+      touch File.join(@dir, "lib", "index.js")
+      touch File.join(@dir, "lib", "package.json"), JSON.dump(:main => "")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "f.gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "lib", "index.js")
+    end
+
+    it "must open ./other.js when as file & directory" do
+      touch File.join(@dir, "index.js"), %(require("./other")) 
+      touch File.join(@dir, "other.js")
+      touch File.join(@dir, "other", "index.js")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "f.gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "other.js")
+    end
+
+    it "must open ./lib/other.js when as file & directory given package.json" do
+      touch File.join(@dir, "index.js"), %(require(".")) 
+      touch File.join(@dir, "package.json"), JSON.dump(:main => "other")
+      touch File.join(@dir, "other.js")
+      touch File.join(@dir, "other", "index.js")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "f.gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "other.js")
     end
 
     it "must open ./node_modules/foo/index.js given foo" do
@@ -253,8 +310,8 @@ describe "Autoloaded" do
       $vim.command(%(let v:errmsg = ""))
       $vim.feedkeys "$hhgf"
 
-      error = $vim.command("verbose let v:errmsg").sub(/^\S+\s*/, "")
-      error.must_equal "E447: Can't find file \"new\" in path"
+      error = $vim.command("let v:errmsg").sub(/^\S+\s*/, "")
+      error.must_equal %(E447: Can't find file "new" in path)
     end
 
     it "must not show an error when opening nothing" do
@@ -264,7 +321,7 @@ describe "Autoloaded" do
       $vim.command(%(let v:errmsg = ""))
       $vim.feedkeys "gf"
 
-      error = $vim.command("verbose let v:errmsg").sub(/^\S+\s*/, "")
+      error = $vim.command("let v:errmsg").sub(/^\S+\s*/, "")
       error.must_equal ""
     end
   end
