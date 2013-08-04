@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/moll/vimrunner.git
+  revision: 4b1ee072e52dea871a0c3370f215f54fe596a9dc
+  specs:
+    vimrunner (0.3.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -42,7 +48,6 @@ GEM
       ffi (>= 0.5.0)
     slop (3.4.6)
     thor (0.18.1)
-    vimrunner (0.3.0)
 
 PLATFORMS
   ruby
@@ -51,4 +56,4 @@ DEPENDENCIES
   guard-minitest
   minitest (< 5)
   minitest-reporters
-  vimrunner
+  vimrunner!

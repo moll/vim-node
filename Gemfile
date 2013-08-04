@@ -4,5 +4,5 @@ group :test do
   gem "minitest", "<5"
   gem "minitest-reporters"
   gem "guard-minitest"
-  gem "vimrunner"
+  gem "vimrunner", :git => "https://github.com/moll/vimrunner.git"
 end
