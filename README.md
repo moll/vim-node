@@ -5,7 +5,7 @@ It's the Node equivalent of [Rails.vim (vimscript #1567)](https://github.com/tpo
 
 This is just the first release to get the nodes rolling. If you've collected great helpers and shortcuts that help you work with Node, please share them via [email](mailto:andri@dot.ee), [Twitter](https://twitter.com/theml) or [GitHub issues](https://github.com/moll/vim-node/issues) so we could incorporate them here, too! Thanks!
 
-### Already Node.vim gives you:
+### Tour
 
 - Use `gf` on paths or requires to open the same file Node.js would.
 - Use `gf` on `require(".")` to open `./index.js`
@@ -16,6 +16,7 @@ This is just the first release to get the nodes rolling. If you've collected gre
 - Use `gf` on `require("module/lib/utils")` and open files inside the module.
 - Automatically sets the filetype to JavaScript for files with Node's shebang (`#!`).
 - Use `[I` etc. to look for a keyword in required files (Sets Vim's `&include`).
+- Node.vim itself is tested with a thorough automated integration test suite! No cowboy coding here!
 
 Expect more to come soon and feel free to let me know what you're after!
 

@@ -4,6 +4,7 @@
 - Adds a new superb `gf` handler to handle all relative and module paths, incl. support for `require(".")` to open `./index.js`. This is spot on how Node.js finds your requires.
 - Adds `<Plug>NodeGotoFile` should you want to remap Node.vim's file opener.
 - Opens files before directories should both, e.g. `./foo.js` and `./foo` exist. This matches Node.js's behavior.
+- Adds a full automated integration test suite to Node.vim which is freaking amazing!
 
 ## 0.2.0 (Jul 28, 2013)
 - Adds full support for navigating to module files by using `gf` on `require("any-module")`.
