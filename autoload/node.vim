@@ -5,6 +5,7 @@ endfunction
 
 function! s:initializeJavaScript()
 	setl suffixesadd+=.js,.json
+	setl path-=/usr/include
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
 	let &l:includeexpr = s:snr() . "find(v:fname, bufname('%'))"
 
