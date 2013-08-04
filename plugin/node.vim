@@ -2,7 +2,7 @@ if exists("g:loaded_node") || &cp || v:version < 700 | finish | endif
 let g:loaded_node = 1
 
 function! s:detect(path)
-	if exists("b:node_root") | return | en
+	if exists("b:node_root") | return | endif
 	let path = a:path
 
 	while 1
