@@ -337,6 +337,34 @@ describe "Autoloaded" do
     end
   end
 
+  describe "Goto file with split" do
+    it "must open file in a new split" do
+      touch File.join(@dir, "index.js"), %(require("./other")) 
+      touch File.join(@dir, "other.js")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "f.\\<C-w>f"
+
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "other.js")
+      $vim.echo(%(winnr("$"))).must_equal "2"
+    end
+  end
+
+  describe "Goto file with tab" do
+    it "must open file in a new tab" do
+      touch File.join(@dir, "index.js"), %(require("./other")) 
+      touch File.join(@dir, "other.js")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "f.\\<C-w>gf"
+
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "other.js")
+      $vim.echo(%(tabpagenr("$"))).must_equal "2"
+    end
+  end
+
   describe "Include file search pattern" do
     it "must find matches given a require" do
       touch File.join(@dir, "index.js"), <<-end.gsub(/^\s+/, "")

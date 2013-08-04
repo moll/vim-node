@@ -11,8 +11,18 @@ function! s:initializeJavaScript()
 
 	nnoremap <buffer><silent> <Plug>NodeGotoFile
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"))<CR>
+	nnoremap <buffer><silent> <Plug>NodeSplitGotoFile
+		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "split")<CR>
+	nnoremap <buffer><silent> <Plug>NodeTabGotoFile
+		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "tab split")<CR>
+
 	if !hasmapto("<Plug>NodeGotoFile")
+		" Split gotofiles don't take a count for the new window's width, but for
+		" opening the nth file. Though Node.vim doesn't support counts atm.
 		nmap <buffer> gf <Plug>NodeGotoFile
+		nmap <buffer> <C-w>f <Plug>NodeSplitGotoFile
+		nmap <buffer> <C-w><C-f> <Plug>NodeSplitGotoFile
+		nmap <buffer> <C-w>gf <Plug>NodeTabGotoFile
 	endif
 endfunction
 
@@ -85,9 +95,10 @@ function! s:pathWithSuffix(path)
 	endfor
 endfunction
 
-function! s:edit(name, from)
+function! s:edit(name, from, ...)
 	if empty(a:name) | return | endif
 	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
+	let command = a:0 == 1 ? a:1 : "edit"
 
 	" If just a plain filename with no directory part, check if it exists:
 	if a:name !~# '^\(/\|\./\|\.\./\)' && filereadable(dir . "/" . a:name)
@@ -100,7 +111,7 @@ function! s:edit(name, from)
 		return s:error("E447: Can't find file \"" . a:name . "\" in path")
 	endif
 
-	exe "edit " . fnameescape(path)
+	exe command . " " . fnameescape(path)
 endfunction
 
 " Using the built-in :echoerr prints a stacktrace, which isn't that nice.
