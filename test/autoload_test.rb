@@ -154,6 +154,27 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "index.js")
     end
 
+    it "must open ./lib/index.js given ./lib" do
+      touch File.join(@dir, "index.js"), %(require("./lib")) 
+      touch File.join(@dir, "lib", "index.js")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "f.gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "lib", "index.js")
+    end
+
+    it "must open ./lib/other.js given ./lib with package.json" do
+      touch File.join(@dir, "index.js"), %(require("./lib")) 
+      touch File.join(@dir, "lib", "other.js")
+      touch File.join(@dir, "lib", "package.json"), JSON.dump(:main => "other")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "f.gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "lib", "other.js")
+    end
+
     it "must open ./node_modules/foo/index.js given foo" do
       touch File.join(@dir, "index.js"), %(require("foo")) 
       index = File.join(@dir, "node_modules", "foo", "index.js")
