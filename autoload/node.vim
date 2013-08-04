@@ -35,24 +35,6 @@ function! s:find(name, from)
 	if !empty(path) | return path | endif
 endfunction
 
-function! s:edit(name, from)
-	if empty(a:name) | return | endif
-	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
-
-	" If just a plain filename with no directory part, check if it exists:
-	if a:name !~# '^\(/\|\./\|\.\./\)' && filereadable(dir . "/" . a:name)
-		let path = dir . "/" . a:name
-	else
-		let path = s:find(a:name, dir)
-	end
-
-	if empty(path)
-		return s:error("E447: Can't find file \"" . a:name . "\" in path")
-	endif
-
-	exe "edit " . fnameescape(path)
-endfunction
-
 function! s:pathFromDirectory(path)
 	" Node.js checks for package.json in every directory, not just the
 	" module's parent. According to:
@@ -84,6 +66,24 @@ function! s:pathWithSuffix(path)
 		let path = a:path . suffix
 		if filereadable(path) | return path | endif
 	endfor
+endfunction
+
+function! s:edit(name, from)
+	if empty(a:name) | return | endif
+	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
+
+	" If just a plain filename with no directory part, check if it exists:
+	if a:name !~# '^\(/\|\./\|\.\./\)' && filereadable(dir . "/" . a:name)
+		let path = dir . "/" . a:name
+	else
+		let path = s:find(a:name, dir)
+	end
+
+	if empty(path)
+		return s:error("E447: Can't find file \"" . a:name . "\" in path")
+	endif
+
+	exe "edit " . fnameescape(path)
 endfunction
 
 " Using the built-in :echoerr prints a stacktrace, which isn't that nice.
