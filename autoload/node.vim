@@ -6,23 +6,46 @@ endfunction
 function! s:initializeJavaScript()
 	setl suffixesadd+=.js,.json
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
-	let &l:includeexpr = s:snr() . "find(v:fname)"
+	let &l:includeexpr = s:snr() . "find(v:fname, bufname('%'))"
+
+	nnoremap <buffer><silent> <Plug>NodeGotoFile
+		\ :call <SID>edit(expand("<cfile>"), bufname("%"))<CR>
+	if !hasmapto("<Plug>NodeGotoFile")
+		nmap <buffer> gf <Plug>NodeGotoFile
+	endif
 endfunction
 
 function! s:snr()
 	return matchstr(expand("<sfile>"), '.*\zs<SNR>\d\+_')
 endfunction
 
-function! s:find(name)
-	" Skip relative or absolute paths.
-	if a:name =~# '^\(/\|\./\|\.\./\)' | return a:name | endif
+function! s:find(name, from)
+	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
 
-	let path = b:node_root . "/node_modules/" . a:name
+	if a:name =~# '^/'
+		let path = a:name
+	elseif a:name =~# '^\.\.\?\(/\|$\)'
+		let path = dir . "/" . a:name
+	else
+		let path = b:node_root . "/node_modules/" . a:name
+	endif
+
 	if isdirectory(path) | let path = s:pathFromDirectory(path) | endif
 	let path = s:pathWithSuffix(path)
 	if !empty(path) | return path | endif
+endfunction
 
-	return a:name
+function! s:edit(name, from)
+	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
+
+	" If just a plain filename with no directory part, check if it exists:
+	if a:name !~# '^\(/\|\./\|\.\./\)' && filereadable(dir . "/" . a:name)
+		let path = dir . "/" . a:name
+	else
+		let path = s:find(a:name, dir)
+	end
+
+	if !empty(path) | exe "edit " . fnameescape(path) | endif
 endfunction
 
 function! s:pathFromDirectory(path)
