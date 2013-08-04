@@ -20,6 +20,8 @@ This is just the first release to get the nodes rolling. If you've collected gre
 
 Expect more to come soon and feel free to let me know what you're after!
 
+PS. Node.vim is absolutely intended to work on Windows, but not yet tested there at all. If you could help, try it out and report issues, I'd be grateful!
+
 
 Installing
 ----------
