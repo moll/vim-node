@@ -209,6 +209,17 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "lib", "index.js")
     end
 
+    it "must open ./lib/index.js if package.json's main file does not exist" do
+      touch File.join(@dir, "index.js"), %(require("./lib")) 
+      touch File.join(@dir, "lib", "index.js")
+      touch File.join(@dir, "lib", "package.json"), JSON.dump(:main => "new")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "f.gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "lib", "index.js")
+    end
+
     it "must open ./other.js when as file & directory" do
       touch File.join(@dir, "index.js"), %(require("./other")) 
       touch File.join(@dir, "other.js")

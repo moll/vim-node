@@ -55,7 +55,11 @@ function! s:pathFromDirectory(path)
 		" NOTE: If package.json's main is empty or refers to a non-existent file,
 		" ./index.js is still tried.
 		let main = s:mainFromPackage(a:path . "/package.json")
-		if !empty(main) && main != "" | return s:findByPath(a:path."/" . main) | en
+
+		if !empty(main) && main != ""
+			let path = s:findByPath(a:path . "/" . main)
+			if !empty(path) | return path | endif
+		endif
 	endif
 
 	" We need to check for ./index.js's existence here rather than leave it to
