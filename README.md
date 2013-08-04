@@ -7,12 +7,15 @@ This is just the first release to get the nodes rolling. If you've collected gre
 
 ### Already Node.vim gives you:
 
-- Use `gf` on `require("module")` to navigate to the module's main file (parsed for you from `package.json`).
-- Use `gf` on `require("module/lib/utils")` and open files inside the module.
+- Use `gf` on paths or requires to open the same file Node.js would.
+- Use `gf` on `require(".")` to open `./index.js`
+- Use `gf` on `require("./dir")` to open `./dir/index.js`
 - Use `gf` on `require("./foo")` to open `foo.js`.
 - Use `gf` on `require("./package")` and have it open package.json.
+- Use `gf` on `require("module")` to open the module's main file (parsed for you from `package.json`).
+- Use `gf` on `require("module/lib/utils")` and open files inside the module.
 - Automatically sets the filetype to JavaScript for files with Node's shebang (`#!`).
-- Use `[I` etc. to look for a keyword in required files (preliminary support via Vim's `&include`).
+- Use `[I` etc. to look for a keyword in required files (Sets Vim's `&include`).
 
 Expect more to come soon and feel free to let me know what you're after!
 
