@@ -1,4 +1,4 @@
-## Unreleased
+## 0.5.0 (Aug 5, 2013)
 - Adds `&include` pattern so Vim can recognize included/required files, e.g. for looking up keywords with `[I`.
 - Cleans `&path` from `/usr/include` for JavaScript files.
 - Adds a new superb `gf` handler to handle all relative and module paths, incl. support for `require(".")` to open `./index.js`. This is spot on how Node.js finds your requires.
