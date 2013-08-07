@@ -58,7 +58,7 @@ Open any JavaScript file inside a Node project and you're all set.
 #### Want to customize settings for files inside a Node projects?
 Use the `Node` autocommand. For example:
 ```vim
-autocmd User Node if &filetype == "javascript" | set expandtab | endif
+autocmd User Node if &filetype == "javascript" | setlocal expandtab | endif
 ```
 
 #### Want `<C-w>f` to open the file under the cursor in a new vertical split?
