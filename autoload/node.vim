@@ -1,6 +1,7 @@
 function! node#initialize(root)
 	let b:node_root = a:root
 	if &filetype == "javascript" | call s:initializeJavaScript() | endif
+	silent doautocmd User Node
 endfunction
 
 function! s:initializeJavaScript()

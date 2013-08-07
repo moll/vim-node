@@ -8,6 +8,14 @@ describe "Autoloaded" do
     FileUtils.touch File.join(@dir, "package.json")
   end
 
+  describe "Autocommand" do
+    it "must fire user autcommand \"Node\"" do
+      $vim.command "au User Node let node_autocommand = 1337"
+      $vim.edit File.join(@dir, "other.js")
+      $vim.echo(%(g:node_autocommand)).must_equal "1337"
+    end
+  end
+
   describe "Goto file" do
     it "must open README.txt as is" do
       touch File.join(@dir, "index.js"), %(// Please read README.txt)

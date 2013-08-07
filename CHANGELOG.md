@@ -1,3 +1,7 @@
+## Unreleased
+- Adds `Node` autocommand.  
+  Use it with `autocmd User Node` to customize settings for files in Node projects.
+
 ## 0.5.0 (Aug 5, 2013)
 - Adds `&include` pattern so Vim can recognize included/required files, e.g. for looking up keywords with `[I`.
 - Cleans `&path` from `/usr/include` for JavaScript files.

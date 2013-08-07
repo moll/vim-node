@@ -52,9 +52,13 @@ Using
 -----
 Open any JavaScript file inside a Node project and you're all set.
 
-- Use `gf` on `require()` to jump to source files.
+- Use `gf` inside `require("...")` to jump to source and module files.
 - Use `[I` on any keyword to look for it in the current and required files.
 
+If you wish to customize settings for files inside a Node project, use the `Node` autocommand. For example:
+```vim
+autocmd User Node if &filetype == "javascript" | set expandtab | endif
+```
 
 License
 -------
