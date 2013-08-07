@@ -14,6 +14,8 @@ function! s:initializeJavaScript()
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"))<CR>
 	nnoremap <buffer><silent> <Plug>NodeSplitGotoFile
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "split")<CR>
+	nnoremap <buffer><silent> <Plug>NodeVSplitGotoFile
+		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "vsplit")<CR>
 	nnoremap <buffer><silent> <Plug>NodeTabGotoFile
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "tab split")<CR>
 
