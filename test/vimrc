@@ -1,12 +1,12 @@
 set nocompatible
-set noswapfile nobackup
+set noswapfile
+set nobackup
 
 set runtimepath-=~/.vim
 set runtimepath-=~/.vim/after
 let &runtimepath = expand("<sfile>:p:h:h") . "," . &runtimepath
 
-filetype plugin on
-filetype indent on
+filetype plugin indent on
 syntax on
 
 set columns=80 lines=24
