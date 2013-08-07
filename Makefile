@@ -1,6 +1,6 @@
 NAME := node
 TITLE := Node.vim
-VERSION := 0.5.0
+VERSION := 0.5.1
 ID := 4674
 
 love:

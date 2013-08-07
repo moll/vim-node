@@ -1,4 +1,4 @@
-## Unreleased
+## 0.5.1 (Aug 8, 2013)
 - Adds `Node` autocommand.  
   Use it with `autocmd User Node` to customize settings for files in Node projects.
 - Adds `<Plug>NodeVSplitGotoFile` for those who want `<C-w>f` to split vertically.
