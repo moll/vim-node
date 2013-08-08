@@ -65,9 +65,9 @@ autocmd User Node if &filetype == "javascript" | setlocal expandtab | endif
 `<C-w>f` by default opens it in a horizontal split. To have it open vertically, drop this in your `vimrc`:
 ```vim
 autocmd User Node
-  \ if &filetype == "javascript"
-  \   nmap <buffer> <C-w>f <Plug>NodeVSplitGotoFile
-  \   nmap <buffer> <C-w><C-f> <Plug>NodeVSplitGotoFile
+  \ if &filetype == "javascript" |
+  \   nmap <buffer> <C-w>f <Plug>NodeVSplitGotoFile |
+  \   nmap <buffer> <C-w><C-f> <Plug>NodeVSplitGotoFile |
   \ endif
 ```
 
