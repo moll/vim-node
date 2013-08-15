@@ -1,5 +1,6 @@
 require "minitest/autorun"
 require "vimrunner"
+require "fileutils"
 require "tempfile"
 
 MiniTest::Unit::TestCase.define_singleton_method(:test_order) do :alpha end
@@ -15,6 +16,10 @@ $vim = Vimrunner::Server.new(:vimrc => vimrc).start
 Minitest::Unit.after_tests { $vim.kill }
 
 module WithTemporaryDirectory
+  def self.included(base)
+    require "tmpdir"
+  end
+
   def setup
     super
     # Mac has the temporary directory symlinked, so need File.realpath to
