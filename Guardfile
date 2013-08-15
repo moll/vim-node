@@ -1,4 +1,4 @@
-guard :minitest, :all_on_start => false do
+guard :minitest, :all_on_start => false, :cli => ENV["TEST_OPTS"] do
   watch(%r(^(.*)\.vim)) {|m| [
     "test/#{m[1]}_test.rb",
     "test/#{m[1].sub(/\/\w+$/, "")}_test.rb"
