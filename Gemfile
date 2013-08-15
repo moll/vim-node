@@ -6,6 +6,6 @@ group :development do
 end
 
 group :test do
-  gem "minitest", "<5"
+  gem "minitest", "< 5"
   gem "vimrunner", :git => "https://github.com/moll/vimrunner.git"
 end
