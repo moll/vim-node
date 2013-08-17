@@ -10,13 +10,6 @@ endfunction
 function! s:initializeCommands()
 	command! -bar -bang -nargs=1 -buffer Nedit 
 		\ exe s:nedit(<q-args>, bufname("%"), "edit<bang>")
-endfunction
-
-function! s:initializeJavaScript()
-	setl path-=/usr/include
-	let &l:suffixesadd .= "," . join(s:suffixesadd, ",")
-	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
-	let &l:includeexpr = s:snr() . "find(v:fname, bufname('%'))"
 
 	nnoremap <buffer><silent> <Plug>NodeGotoFile
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"))<CR>
@@ -26,6 +19,13 @@ function! s:initializeJavaScript()
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "vsplit")<CR>
 	nnoremap <buffer><silent> <Plug>NodeTabGotoFile
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "tab split")<CR>
+endfunction
+
+function! s:initializeJavaScript()
+	setl path-=/usr/include
+	let &l:suffixesadd .= "," . join(s:suffixesadd, ",")
+	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
+	let &l:includeexpr = s:snr() . "find(v:fname, bufname('%'))"
 
 	if !hasmapto("<Plug>NodeGotoFile")
 		" Split gotofiles don't take a count for the new window's width, but for

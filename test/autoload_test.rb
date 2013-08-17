@@ -238,6 +238,11 @@ describe "Autoloaded" do
   end
 
   describe "Goto file" do
+    it "must define plug mapping in non-JavaScript files" do
+      $vim.edit File.join(@dir, "README")
+      $vim.echo(%(maparg("<Plug>NodeGotoFile", "n"))).wont_equal ""
+    end
+
     it "must not be available in non-JavaScript files" do
       $vim.edit File.join(@dir, "README")
       $vim.echo(%(hasmapto("<Plug>NodeGotoFile"))).must_equal "0"
