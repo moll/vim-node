@@ -1,12 +1,20 @@
+let s:suffixesadd = [".js", ".json"]
+
 function! node#initialize(root)
 	let b:node_root = a:root
+	call s:initializeCommands()
 	if &filetype == "javascript" | call s:initializeJavaScript() | endif
 	silent doautocmd User Node
 endfunction
 
+function! s:initializeCommands()
+	command! -bar -bang -nargs=1 -buffer Nedit 
+		\ exe s:nedit(<q-args>, bufname("%"), "edit<bang>")
+endfunction
+
 function! s:initializeJavaScript()
-	setl suffixesadd+=.js,.json
 	setl path-=/usr/include
+	let &l:suffixesadd .= "," . join(s:suffixesadd, ",")
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
 	let &l:includeexpr = s:snr() . "find(v:fname, bufname('%'))"
 
@@ -38,7 +46,7 @@ function! s:find(name, from)
 
 	if a:name =~# '^/'
 		let path = a:name
-	elseif a:name =~# '^\.\.\?\(/\|$\)'
+	elseif a:name =~# '^\v\.\.?(/|$)'
 		let path = dir . "/" . a:name
 	else
 		let path = b:node_root . "/node_modules/" . a:name
@@ -47,10 +55,14 @@ function! s:find(name, from)
 	return s:findByPath(path)
 endfunction
 
+function! node#find(name, ...)
+	let from = a:0 == 1 ? a:1 : bufname("%")
+	return s:find(a:name, from)
+endfunction
+
 function! s:findByPath(path)
 	" Node checks for files *before* directories, so see if the path does not
 	" end with a slash or dots and try to match it as a file.
-	" TODO: Add \v
 	if a:path !~# '\v/(\.\.?/?)?$'
 		let path_with_suffix = s:pathWithSuffix(a:path)
 		if !empty(path_with_suffix) | return path_with_suffix | endif
@@ -92,7 +104,7 @@ function! s:mainFromPackage(path)
 endfunction
 
 function! s:pathWithSuffix(path)
-	for suffix in ([""] + split(&suffixesadd, ","))
+	for suffix in s:uniq([""] + s:suffixesadd + split(&l:suffixesadd, ","))
 		let path = a:path . suffix
 		if filereadable(path) | return path | endif
 	endfor
@@ -104,7 +116,7 @@ function! s:edit(name, from, ...)
 	let command = a:0 == 1 ? a:1 : "edit"
 
 	" If just a plain filename with no directory part, check if it exists:
-	if a:name !~# '^\(/\|\./\|\.\./\)' && filereadable(dir . "/" . a:name)
+	if a:name !~# '^\v(/|\./|\.\./)' && filereadable(dir . "/" . a:name)
 		let path = dir . "/" . a:name
 	else
 		let path = s:find(a:name, dir)
@@ -117,10 +129,21 @@ function! s:edit(name, from, ...)
 	exe command . " " . fnameescape(path)
 endfunction
 
+function! s:nedit(name, from, ...)
+	let command = a:0 == 1 ? a:1 : "edit"
+	let name = a:name =~# '^/' ? "." . a:name : a:name
+	call s:edit(name, b:node_root, command)
+endfunction
+
 " Using the built-in :echoerr prints a stacktrace, which isn't that nice.
 function! s:error(msg)
 	echohl ErrorMsg
 	echomsg a:msg
 	echohl NONE
 	let v:errmsg = a:msg
+endfunction
+
+function! s:uniq(list)
+	let list = reverse(copy(a:list))
+	return reverse(filter(list, "index(list, v:val, v:key + 1) == -1"))
 endfunction

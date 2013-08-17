@@ -1,3 +1,7 @@
+## Unreleased
+- Adds `:Nedit` command for editing modules or files relative to the Node project root.
+  For example: `:Nedit any-module/lib` or `:Nedit /package`.
+
 ## 0.5.1 (Aug 8, 2013)
 - Adds `Node` autocommand.  
   Use it with `autocmd User Node` to customize settings for files in Node projects.
