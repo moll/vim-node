@@ -11,6 +11,8 @@ endfunction
 function! s:initializeCommands()
 	command! -bar -bang -nargs=1 -buffer Nedit 
 		\ exe s:nedit(<q-args>, bufname("%"), "edit<bang>")
+	command! -bar -bang -nargs=1 -buffer Nopen 
+		\ exe s:nopen(<q-args>, bufname("%"), "edit<bang>")
 
 	nnoremap <buffer><silent> <Plug>NodeGotoFile
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"))<CR>
@@ -43,17 +45,18 @@ function! s:snr()
 endfunction
 
 function! s:find(name, from)
-	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
+	return s:resolve(s:absolutize(a:name, a:from))
+endfunction
 
+function! s:absolutize(name, from)
 	if a:name =~# '^/'
-		let path = a:name
+		return a:name
 	elseif a:name =~# '^\v\.\.?(/|$)'
-		let path = dir . "/" . a:name
+		let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
+		return dir . "/" . a:name
 	else
-		let path = b:node_root . "/node_modules/" . a:name
+		return b:node_root . "/node_modules/" . a:name
 	endif
-
-	return s:findByPath(path)
 endfunction
 
 function! node#find(name, ...)
@@ -61,18 +64,18 @@ function! node#find(name, ...)
 	return s:find(a:name, from)
 endfunction
 
-function! s:findByPath(path)
+function! s:resolve(path)
 	" Node checks for files *before* directories, so see if the path does not
 	" end with a slash or dots and try to match it as a file.
 	if a:path !~# '\v/(\.\.?/?)?$'
-		let path_with_suffix = s:pathWithSuffix(a:path)
+		let path_with_suffix = s:resolveSuffix(a:path)
 		if !empty(path_with_suffix) | return path_with_suffix | endif
 	endif
 
-	if isdirectory(a:path) | return s:pathFromDirectory(a:path) | endif
+	if isdirectory(a:path) | return s:resolveFromDirectory(a:path) | endif
 endfunction
 
-function! s:pathFromDirectory(path)
+function! s:resolveFromDirectory(path)
 	" Node.js checks for package.json in every directory, not just the
 	" module's parent. According to:
 	" http://nodejs.org/api/modules.html#modules_all_together
@@ -84,7 +87,7 @@ function! s:pathFromDirectory(path)
 		let main = s:mainFromPackage(a:path . "/package.json")
 
 		if !empty(main) && main != ""
-			let path = s:findByPath(a:path . "/" . main)
+			let path = s:resolve(a:path . "/" . main)
 			if !empty(path) | return path | endif
 		endif
 	endif
@@ -94,7 +97,7 @@ function! s:pathFromDirectory(path)
 	" from the directory defaulting to ./index.js or it was the package.json
 	" which referred to ./index, which in itself could mean both ./index.js and
 	" ./index/index.js.
-	return s:pathWithSuffix(a:path . "/index")
+	return s:resolveSuffix(a:path . "/index")
 endfunction
 
 function! s:mainFromPackage(path)
@@ -104,7 +107,7 @@ function! s:mainFromPackage(path)
 	endfor
 endfunction
 
-function! s:pathWithSuffix(path)
+function! s:resolveSuffix(path)
 	for suffix in s:uniq([""] + s:suffixesadd + split(&l:suffixesadd, ","))
 		let path = a:path . suffix
 		if filereadable(path) | return path | endif
@@ -134,6 +137,12 @@ function! s:nedit(name, from, ...)
 	let command = a:0 == 1 ? a:1 : "edit"
 	let name = a:name =~# '^/' ? "." . a:name : a:name
 	call s:edit(name, b:node_root, command)
+endfunction
+
+function! s:nopen(name, from, ...)
+	let command = a:0 == 1 ? a:1 : "edit"
+	call s:nedit(a:name, a:from, command)
+	if exists("b:node_root") | exe "lcd " . fnameescape(b:node_root) | endif
 endfunction
 
 " Using the built-in :echoerr prints a stacktrace, which isn't that nice.

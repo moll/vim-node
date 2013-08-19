@@ -562,4 +562,37 @@ describe "Autoloaded" do
       $vim.echo(%(bufname("%"))).must_equal index
     end
   end
+
+  describe ":Nopen" do
+    it "must edit and lcd to module's directory" do
+      touch File.join(@dir, "node_modules", "foo", "package.json")
+      touch File.join(@dir, "node_modules", "foo", "index.js")
+
+      $vim.edit File.join(@dir, "README.txt")
+      $vim.command("vsplit")
+
+      $vim.command("Nopen foo")
+      $vim.echo(%(bufname("%"))).must_equal "index.js"
+      $vim.command("pwd").must_equal File.join(@dir, "node_modules", "foo")
+
+      $vim.command("wincmd p")
+      $vim.command("pwd").must_equal Dir.pwd
+    end
+
+    it "must edit and lcd to module's root directory" do
+      touch File.join(@dir, "node_modules", "foo", "package.json")
+      utils = File.join(@dir, "node_modules", "foo", "lib", "utils.js")
+      touch utils
+
+      $vim.edit File.join(@dir, "README.txt")
+      $vim.command("vsplit")
+
+      $vim.command("Nopen foo/lib/utils")
+      $vim.echo(%(bufname("%"))).must_equal "lib/utils.js"
+      $vim.command("pwd").must_equal File.join(@dir, "node_modules", "foo")
+
+      $vim.command("wincmd p")
+      $vim.command("pwd").must_equal Dir.pwd
+    end
+  end
 end
