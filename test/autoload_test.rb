@@ -377,6 +377,21 @@ describe "Autoloaded" do
       error = $vim.command("let v:errmsg").sub(/^\S+\s*/, "")
       error.must_equal %(E447: Can't find file "new" in path)
     end
+
+    it "must find also when filetype is JSON" do
+      $vim.command("au BufReadPre package set ft=json")
+      touch File.join(@dir, "package"), %({"dependencies": {"foo": "1.x"}})
+      index = File.join(@dir, "node_modules", "foo", "index.js")
+      touch index
+
+      $vim.edit File.join(@dir, "package")
+      $vim.echo("&filetype").must_equal "json"
+      $vim.command("au! BufReadPre package set ft=json")
+
+      $vim.feedkeys "/foo\\<CR>gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal index
+    end
   end
 
   describe "Goto file with split" do

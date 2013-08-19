@@ -2,6 +2,7 @@
 - Adds `:Nedit` command for editing modules or files relative to the Node project root.
   For example: `:Nedit any-module/lib` or `:Nedit /package`.
 - Makes `<Plug>NodeGotoFile` available for your mapping in any Node project file, but maps it to `gf` automatically only on JavaScript files.
+- Maps `gf` also for JSON files for easy jumping to modules.
 
 ## 0.5.1 (Aug 8, 2013)
 - Adds `Node` autocommand.  

@@ -1,9 +1,10 @@
 let s:suffixesadd = [".js", ".json"]
+let s:filetypes = ["javascript", "json"]
 
 function! node#initialize(root)
 	let b:node_root = a:root
 	call s:initializeCommands()
-	if &filetype == "javascript" | call s:initializeJavaScript() | endif
+	if index(s:filetypes, &filetype) > -1 | call s:initializeJavaScript() | en
 	silent doautocmd User Node
 endfunction
 
