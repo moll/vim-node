@@ -11,8 +11,8 @@ begin
 rescue LoadError
 end
 
-vimrc = File.expand_path("../vimrc", __FILE__)
-$vim = Vimrunner::Server.new(:vimrc => vimrc).start
+$vimrc = File.expand_path("../vimrc", __FILE__)
+$vim = Vimrunner::Server.new(:vimrc => $vimrc).start
 Minitest::Unit.after_tests { $vim.kill }
 
 module WithTemporaryDirectory

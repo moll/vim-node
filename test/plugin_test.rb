@@ -68,5 +68,18 @@ describe "Plugin" do
       $vim.edit File.join(nested, "index_test.js")
       $vim.echo("b:node_root").must_equal nested
     end
+
+    it "must detect directory as Node's when opening Vim" do
+      begin
+        Dir.chdir @dir
+        FileUtils.touch File.join(@dir, "package.json")
+
+        vim = Vimrunner::Server.new(:vimrc => $vimrc).start
+        vim.command("pwd").must_equal @dir
+        vim.echo("b:node_root").must_equal @dir
+      ensure
+        vim.kill if vim
+      end
+    end
   end
 end
