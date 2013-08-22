@@ -344,6 +344,42 @@ describe "Autoloaded" do
       $vim.command("Nedit foo")
       $vim.echo(%(bufname("%"))).must_equal index
     end
+
+    describe "completion" do
+      def completions_for(cmd)
+        $vim.command(%(silent! normal! :#{cmd}e)).sub(/^:\w+\s+/, "")
+      end
+
+      it "must return all modules" do
+        Dir.mkdir File.join(@dir, "node_modules")
+        Dir.mkdir File.join(@dir, "node_modules", "require-guard")
+        Dir.mkdir File.join(@dir, "node_modules", "export")
+        Dir.mkdir File.join(@dir, "node_modules", "soul")
+
+        $vim.edit File.join(@dir, "README.txt")
+        completions_for("Nedit ").must_equal "export require-guard soul"
+      end
+
+      it "must return matching modules" do
+        Dir.mkdir File.join(@dir, "node_modules")
+        Dir.mkdir File.join(@dir, "node_modules", "export")
+        Dir.mkdir File.join(@dir, "node_modules", "soul")
+        Dir.mkdir File.join(@dir, "node_modules", "soulstash")
+
+        $vim.edit File.join(@dir, "README.txt")
+        completions_for("Nedit s").must_equal "soul soulstash"
+      end
+
+      it "must not return modules with matching bit in the middle" do
+        Dir.mkdir File.join(@dir, "node_modules")
+        Dir.mkdir File.join(@dir, "node_modules", "soul")
+        Dir.mkdir File.join(@dir, "node_modules", "soulstash")
+        Dir.mkdir File.join(@dir, "node_modules", "asoul")
+
+        $vim.edit File.join(@dir, "README.txt")
+        completions_for("Nedit sou").must_equal "soul soulstash"
+      end
+    end
   end
 
   describe ":Nopen" do

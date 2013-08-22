@@ -76,6 +76,21 @@ function! s:nopen(name, from, ...)
 	if exists("b:node_root") | exe "lcd " . fnameescape(b:node_root) | endif
 endfunction
 
+function! s:complete(arg, cmd, cursor)
+	let possibilities = []
+
+	if a:arg =~# '^/'
+	elseif a:arg =~# '^\v\.\.?(/|$)'
+	else
+		let path = b:node_root . "/node_modules/"
+		let possibilities = glob(fnameescape(path) . "/*", 1, 1)
+		call map(possibilities, "fnamemodify(v:val, ':t')")
+	endif
+
+	call filter(possibilities, "stridx(v:val, a:arg) == 0")
+	return possibilities
+endfunction
+
 " Using the built-in :echoerr prints a stacktrace, which isn't that nice.
 function! s:error(msg)
 	echohl ErrorMsg
