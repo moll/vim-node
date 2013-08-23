@@ -346,6 +346,11 @@ describe "Autoloaded" do
     end
 
     describe "completion" do
+      after do
+        $vim.command("set wildignorecase&")
+        $vim.command("set fileignorecase&")
+      end
+
       def complete(cmd)
         cmdline = $vim.command(%(silent! normal! :#{cmd}e))
         cmdline.sub(/^:\w+\s+/, "")
@@ -393,6 +398,30 @@ describe "Autoloaded" do
         touch File.join(@dir, "node_modules", "soul", "test", "test.js")
         $vim.edit File.join(@dir, "README.txt")
         complete("Nedit soul//").must_equal "soul//index.js soul//test/"
+      end
+
+      it "must return files case-insensitively given &fileignorecase" do
+        skip if $vim.echo(%(exists("&fileignorecase"))) != "1"
+
+        $vim.command("set fileignorecase")
+        $vim.command("set nowildignorecase")
+
+        touch File.join(@dir, "node_modules", "soul", "index.js")
+        touch File.join(@dir, "node_modules", "soul", "CHANGELOG")
+        $vim.edit File.join(@dir, "README.txt")
+        complete("Nedit soul/chan").must_equal "soul/CHANGELOG"
+      end
+
+      it "must return files case-insensitively given only &wildignorecase" do
+        skip if $vim.echo(%(exists("&wildignorecase"))) != "1"
+
+        $vim.command("set nofileignorecase")
+        $vim.command("set wildignorecase")
+
+        touch File.join(@dir, "node_modules", "soul", "index.js")
+        touch File.join(@dir, "node_modules", "soul", "CHANGELOG")
+        $vim.edit File.join(@dir, "README.txt")
+        complete("Nedit soul/chan").must_equal "soul/CHANGELOG"
       end
     end
   end

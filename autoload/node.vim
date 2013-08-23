@@ -73,8 +73,14 @@ endfunction
 
 function! s:complete(arg, cmd, cursor)
 	let matches = node#lib#glob(s:dirname(a:arg))
-	call filter(matches, "stridx(v:val, a:arg) == 0")
-	return matches
+
+	let filter = "stridx(v:val, a:arg) == 0"
+	let ignorecase = 0
+	let ignorecase = ignorecase || exists("&fileignorecase") && &fileignorecase
+	let ignorecase = ignorecase || exists("&wildignorecase") && &wildignorecase
+	if ignorecase | let filter = "stridx(tolower(v:val),tolower(a:arg)) == 0" | en
+
+	return filter(matches, filter)
 endfunction
 
 function! s:dirname(path)
