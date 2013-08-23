@@ -237,7 +237,9 @@ describe "Lib" do
     end
 
     def glob(arg = "")
-      JSON.parse $vim.echo(%(node#lib#glob("#{arg}"))).gsub("'", '"')
+      # Because of possible locale and filesystem case-sensitiveness
+      # differences, sort the output explicitly to be resistant.
+      JSON.parse($vim.echo(%(node#lib#glob("#{arg}"))).gsub("'", '"')).sort
     end
 
     describe "given nothing" do
@@ -245,7 +247,7 @@ describe "Lib" do
         touch File.join(@dir, "index.js")
         touch File.join(@dir, "README.txt")
         Dir.mkdir File.join(@dir, "test")
-        glob.must_equal %w[./index.js ./README.txt ./test/]
+        glob.must_equal %w[./README.txt ./index.js ./test/]
       end
 
       it "must return modules" do
@@ -261,7 +263,7 @@ describe "Lib" do
         touch File.join(@dir, "index.js")
         touch File.join(@dir, "README.txt")
         Dir.mkdir File.join(@dir, "test")
-        glob.must_equal %w[export/ soul/ ./index.js ./README.txt ./test/]
+        glob.must_equal %w[./README.txt ./index.js ./test/ export/ soul/]
       end
 
       it "must not return the node_modules directory" do
@@ -274,7 +276,7 @@ describe "Lib" do
       it "must return files and directories given /" do
         files = Dir.entries("/")
         files.reject! {|f| f =~ /^\./ }
-        files.sort! {|a, b| a.downcase <=> b.downcase }
+        files.sort!
         files.map! {|f| "/" + f }
         files.map! {|f| File.directory?(f) ? f + "/" : f }
 
@@ -286,7 +288,7 @@ describe "Lib" do
         touch File.join(@dir, "README")
         Dir.mkdir File.join(@dir, "test")
 
-        files = %W[#@dir/index.js #@dir/node_modules/ #@dir/README #@dir/test/]
+        files = %W[#@dir/README #@dir/index.js #@dir/node_modules/ #@dir/test/]
         glob(@dir).must_equal files
       end
 
@@ -303,7 +305,7 @@ describe "Lib" do
         Dir.mkdir File.join(@dir, "test")
         FileUtils.mkpath File.join(@dir, "node_modules", "soul")
 
-        files = %W[#@dir/index.js #@dir/node_modules/ #@dir/README #@dir/test/]
+        files = %W[#@dir/README #@dir/index.js #@dir/node_modules/ #@dir/test/]
         glob(@dir).must_equal files
       end
     end
@@ -313,28 +315,28 @@ describe "Lib" do
         touch File.join(@dir, "index.js")
         touch File.join(@dir, "README")
         Dir.mkdir File.join(@dir, "test")
-        glob(".").must_equal %W[./index.js ./README ./test/]
+        glob(".").must_equal %W[./README ./index.js ./test/]
       end
 
       it "must return files and directories given ./" do
         touch File.join(@dir, "index.js")
         touch File.join(@dir, "README")
         Dir.mkdir File.join(@dir, "test")
-        glob("./").must_equal %W[./index.js ./README ./test/]
+        glob("./").must_equal %W[./README ./index.js ./test/]
       end
 
       it "must return files and directories given .//" do
         touch File.join(@dir, "index.js")
         touch File.join(@dir, "README.txt")
         Dir.mkdir File.join(@dir, "test")
-        glob(".//").must_equal %W[.//index.js .//README.txt .//test/]
+        glob(".//").must_equal %W[.//README.txt .//index.js .//test/]
       end
 
       it "must return files and directories given .///" do
         touch File.join(@dir, "index.js")
         touch File.join(@dir, "README.txt")
         Dir.mkdir File.join(@dir, "test")
-        glob(".///").must_equal %W[.///index.js .///README.txt .///test/]
+        glob(".///").must_equal %W[.///README.txt .///index.js .///test/]
       end
 
       it "must return files and directories given ./test" do
@@ -349,7 +351,7 @@ describe "Lib" do
         touch File.join(@dir, "node_modules", "soul", "index.js")
         touch File.join(@dir, "node_modules", "soul", "README")
         FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
-        glob("soul").must_equal %w[soul/index.js soul/README soul/test/]
+        glob("soul").must_equal %w[soul/README soul/index.js soul/test/]
       end
 
       it "must return files and directories given soul/" do
