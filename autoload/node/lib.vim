@@ -68,7 +68,6 @@ function! s:resolveSuffix(path)
 endfunction
 
 let s:GLOB_WILDIGNORE = 1
-let s:GLOB_RET_LIST = 1
 
 function! node#lib#glob(dir)
 	let matches = []
@@ -93,15 +92,15 @@ function! node#lib#glob(dir)
 		let matches += relatives
 	endif
 
-	return [a:dir, b:node_root, matches]
-
 	return matches
 endfunction
 
 function! s:glob(path, stripPrefix)
 	" Remove a single trailing slash because we're adding one with the glob.
 	let path = substitute(a:path, '/$', "", "")
-	let list = glob(fnameescape(path)."/*", s:GLOB_WILDIGNORE, s:GLOB_RET_LIST)
+	" Glob() got the ability to return a list only in Vim 7.3.465. Using split
+	" for compatibility.
+	let list = split(glob(fnameescape(path)."/*", s:GLOB_WILDIGNORE), "\n")
 
 	" Add slashes to directories, like /bin/ls.
 	call map(list, "v:val . (isdirectory(v:val) ? '/' : '')")
