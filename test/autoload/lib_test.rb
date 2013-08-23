@@ -228,4 +228,55 @@ describe "Lib" do
       $vim.echo(%(empty(node#lib#find("new", expand("%"))))).must_equal "1"
     end
   end
+
+  describe "node#lib#glob" do
+    require "json"
+
+    before do
+      $vim.edit File.join(@dir, "index.js")
+    end
+
+    def glob(arg = "")
+      JSON.parse $vim.echo(%(node#lib#glob("#{arg}"))).gsub("'", '"')
+    end
+
+    it "must return all modules" do
+      FileUtils.mkpath File.join(@dir, "node_modules", "require-guard")
+      FileUtils.mkpath File.join(@dir, "node_modules", "export")
+      FileUtils.mkpath File.join(@dir, "node_modules", "soul")
+      glob.must_equal %w[export/ require-guard/ soul/]
+    end
+
+    it "must return all files and directories in module's directory" do
+      touch File.join(@dir, "node_modules", "soul", "index.js")
+      touch File.join(@dir, "node_modules", "soul", "README")
+      FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
+      glob("soul").must_equal %w[soul/index.js soul/README soul/test/]
+    end
+
+    it "must not return files in module's subdirectories" do
+      touch File.join(@dir, "node_modules", "soul", "index.js")
+      touch File.join(@dir, "node_modules", "soul", "README")
+      touch File.join(@dir, "node_modules", "soul", "test", "test.js")
+      glob("soul").must_equal %w[soul/index.js soul/README soul/test/]
+    end
+
+    it "must return files with a single slash given one" do
+      touch File.join(@dir, "node_modules", "soul", "index.js")
+      FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
+      glob("soul/").must_equal %w[soul/index.js soul/test/]
+    end
+
+    it "must return files with two slashes given two" do
+      touch File.join(@dir, "node_modules", "soul", "index.js")
+      FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
+      glob("soul//").must_equal %w[soul//index.js soul//test/]
+    end
+
+    it "must return files with three slashes given three" do
+      touch File.join(@dir, "node_modules", "soul", "index.js")
+      FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
+      glob("soul///").must_equal %w[soul///index.js soul///test/]
+    end
+  end
 end

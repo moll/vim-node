@@ -72,18 +72,19 @@ function! s:nopen(name, from, ...)
 endfunction
 
 function! s:complete(arg, cmd, cursor)
-	let possibilities = []
+	let matches = node#lib#glob(s:dirname(a:arg))
+	call filter(matches, "stridx(v:val, a:arg) == 0")
+	return matches
+endfunction
 
-	if a:arg =~# '^/'
-	elseif a:arg =~# '^\v\.\.?(/|$)'
-	else
-		let path = b:node_root . "/node_modules/"
-		let possibilities = glob(fnameescape(path) . "/*", 1, 1)
-		call map(possibilities, "fnamemodify(v:val, ':t')")
-	endif
+function! s:dirname(path)
+	let dirname = fnamemodify(a:path, ":h")
+	if dirname == "." | return "" | endif
 
-	call filter(possibilities, "stridx(v:val, a:arg) == 0")
-	return possibilities
+	" To not change the amount of final consecutive slashes, using this
+	" dirname/basename trick:
+	let basename = fnamemodify(a:path, ":t")
+	return a:path[0 : 0 - len(basename) - 1]
 endfunction
 
 " Using the built-in :echoerr prints a stacktrace, which isn't that nice.

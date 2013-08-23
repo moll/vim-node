@@ -346,8 +346,9 @@ describe "Autoloaded" do
     end
 
     describe "completion" do
-      def completions_for(cmd)
-        $vim.command(%(silent! normal! :#{cmd}e)).sub(/^:\w+\s+/, "")
+      def complete(cmd)
+        cmdline = $vim.command(%(silent! normal! :#{cmd}e))
+        cmdline.sub(/^:\w+\s+/, "")
       end
 
       it "must return all modules" do
@@ -357,7 +358,7 @@ describe "Autoloaded" do
         Dir.mkdir File.join(@dir, "node_modules", "soul")
 
         $vim.edit File.join(@dir, "README.txt")
-        completions_for("Nedit ").must_equal "export require-guard soul"
+        complete("Nedit ").must_equal "export/ require-guard/ soul/"
       end
 
       it "must return matching modules" do
@@ -367,7 +368,7 @@ describe "Autoloaded" do
         Dir.mkdir File.join(@dir, "node_modules", "soulstash")
 
         $vim.edit File.join(@dir, "README.txt")
-        completions_for("Nedit s").must_equal "soul soulstash"
+        complete("Nedit s").must_equal "soul/ soulstash/"
       end
 
       it "must not return modules with matching bit in the middle" do
@@ -377,7 +378,21 @@ describe "Autoloaded" do
         Dir.mkdir File.join(@dir, "node_modules", "asoul")
 
         $vim.edit File.join(@dir, "README.txt")
-        completions_for("Nedit sou").must_equal "soul soulstash"
+        complete("Nedit sou").must_equal "soul/ soulstash/"
+      end
+
+      it "must return all files and directories in module's directory" do
+        touch File.join(@dir, "node_modules", "soul", "index.js")
+        touch File.join(@dir, "node_modules", "soul", "test", "test.js")
+        $vim.edit File.join(@dir, "README.txt")
+        complete("Nedit soul/").must_equal "soul/index.js soul/test/"
+      end
+
+      it "must return all files and directories given a double slash" do
+        touch File.join(@dir, "node_modules", "soul", "index.js")
+        touch File.join(@dir, "node_modules", "soul", "test", "test.js")
+        $vim.edit File.join(@dir, "README.txt")
+        complete("Nedit soul//").must_equal "soul//index.js soul//test/"
       end
     end
   end

@@ -63,6 +63,30 @@ function! s:resolveSuffix(path)
 	endfor
 endfunction
 
+let s:GLOB_WILDIGNORE = 1
+let s:GLOB_RETURN_LIST = 1
+
+function! node#lib#glob(dir)
+	" Remove a single trailing slash, but keep extra ones.
+	let dir = substitute(a:dir, '/$', "", "")
+
+	if dir =~# '^/'
+	elseif dir =~# '^\v\.\.?(/|$)'
+	else
+		let root = b:node_root . "/node_modules"
+		let path = empty(dir) ? root : root . "/" . dir
+		let glob = fnameescape(path) . "/*"
+		let matches = glob(glob, s:GLOB_WILDIGNORE, s:GLOB_RETURN_LIST)
+
+		call map(matches, "v:val . (isdirectory(v:val) ? '/' : '')")
+		" Counting and removing bytes intentionally as there's no substr function
+		" that takes character count, only bytes.
+		call map(matches, "strpart(v:val, len(root) + 1)")
+
+		return matches
+	endif
+endfunction
+
 function! s:uniq(list)
 	let list = reverse(copy(a:list))
 	return reverse(filter(list, "index(list, v:val, v:key + 1) == -1"))
