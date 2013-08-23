@@ -18,6 +18,8 @@ This is just the first release to get the nodes rolling. If you've collected gre
 - Use `gf` on `require("module/lib/utils")` and open files inside the module.
 - Automatically sets the filetype to JavaScript for files with Node's shebang (`#!`).
 - Use `[I` etc. to look for a keyword in required files (Sets Vim's `&include`).
+- Use `:Nedit` to quickly edit any module, file in a module or your project file.
+- Use `:Nopen` to quickly edit any module and `lcd` to its directory.
 - Node.vim itself is tested with a thorough automated integration test suite! No cowboy coding here!
 
 Expect more to come soon and feel free to let me know what you're after!
@@ -54,6 +56,9 @@ Open any JavaScript file inside a Node project and you're all set.
 
 - Use `gf` inside `require("...")` to jump to source and module files.
 - Use `[I` on any keyword to look for it in the current and required files.
+- Use `:Nedit module_name` to edit the main file of a module.
+- Use `:Nedit module_name/lib/foo` to edit its `lib/foo.js` file.
+- Use `:Nedit .` to edit your Node projects main (usually `index.js`) file.
 
 #### Want to customize settings for files inside a Node projects?
 Use the `Node` autocommand. For example:
