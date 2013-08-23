@@ -34,7 +34,7 @@ module WithTemporaryDirectory
 end
 
 def touch(path, contents = nil)
-  FileUtils.mkdir_p File.dirname(path)
+  FileUtils.mkpath File.dirname(path)
   return FileUtils.touch(path) if contents.nil? || contents.empty?
   File.open(path, "w") {|f| f.write contents }
 end
