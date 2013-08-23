@@ -5,7 +5,7 @@ describe "Lib" do
   include WithTemporaryDirectory
 
   before do
-    FileUtils.touch File.join(@dir, "package.json")
+    Dir.mkdir File.join(@dir, "node_modules")
   end
 
   describe "node#lib#find" do
@@ -240,43 +240,141 @@ describe "Lib" do
       JSON.parse $vim.echo(%(node#lib#glob("#{arg}"))).gsub("'", '"')
     end
 
-    it "must return all modules" do
-      FileUtils.mkpath File.join(@dir, "node_modules", "require-guard")
-      FileUtils.mkpath File.join(@dir, "node_modules", "export")
-      FileUtils.mkpath File.join(@dir, "node_modules", "soul")
-      glob.must_equal %w[export/ require-guard/ soul/]
+    describe "given nothing" do
+      it "must return files and directories" do
+        touch File.join(@dir, "index.js")
+        touch File.join(@dir, "README.txt")
+        Dir.mkdir File.join(@dir, "test")
+        glob.must_equal %w[./index.js ./README.txt ./test/]
+      end
+
+      it "must return modules" do
+        FileUtils.mkpath File.join(@dir, "node_modules", "require-guard")
+        FileUtils.mkpath File.join(@dir, "node_modules", "export")
+        FileUtils.mkpath File.join(@dir, "node_modules", "soul")
+        glob.must_equal %w[export/ require-guard/ soul/]
+      end
+
+      it "must return files, directories and modules" do
+        FileUtils.mkpath File.join(@dir, "node_modules", "export")
+        FileUtils.mkpath File.join(@dir, "node_modules", "soul")
+        touch File.join(@dir, "index.js")
+        touch File.join(@dir, "README.txt")
+        Dir.mkdir File.join(@dir, "test")
+        glob.must_equal %w[export/ soul/ ./index.js ./README.txt ./test/]
+      end
+
+      it "must not return the node_modules directory" do
+        FileUtils.mkpath File.join(@dir, "node_modules")
+        glob.must_equal %w[]
+      end
     end
 
-    it "must return all files and directories in module's directory" do
-      touch File.join(@dir, "node_modules", "soul", "index.js")
-      touch File.join(@dir, "node_modules", "soul", "README")
-      FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
-      glob("soul").must_equal %w[soul/index.js soul/README soul/test/]
+    describe "given absolute path" do
+      it "must return files and directories given /" do
+        files = Dir.entries("/")
+        files.reject! {|f| f =~ /^\./ }
+        files.sort! {|a, b| a.downcase <=> b.downcase }
+        files.map! {|f| "/" + f }
+        files.map! {|f| File.directory?(f) ? f + "/" : f }
+
+        glob("/").must_equal files
+      end
+
+      it "must return files and directories given /.../" do
+        touch File.join(@dir, "index.js")
+        touch File.join(@dir, "README")
+        Dir.mkdir File.join(@dir, "test")
+
+        files = %W[#@dir/index.js #@dir/node_modules/ #@dir/README #@dir/test/]
+        glob(@dir).must_equal files
+      end
+
+      it "must return files and directories given /.../test" do
+        touch File.join(@dir, "test", "index_test.js")
+        touch File.join(@dir, "test", "helpers.js")
+        files = %W[#@dir/test/helpers.js #@dir/test/index_test.js]
+        glob(File.join(@dir, "test")).must_equal files
+      end
+
+      it "must not return modules along with files" do
+        touch File.join(@dir, "index.js")
+        touch File.join(@dir, "README")
+        Dir.mkdir File.join(@dir, "test")
+        FileUtils.mkpath File.join(@dir, "node_modules", "soul")
+
+        files = %W[#@dir/index.js #@dir/node_modules/ #@dir/README #@dir/test/]
+        glob(@dir).must_equal files
+      end
     end
 
-    it "must not return files in module's subdirectories" do
-      touch File.join(@dir, "node_modules", "soul", "index.js")
-      touch File.join(@dir, "node_modules", "soul", "README")
-      touch File.join(@dir, "node_modules", "soul", "test", "test.js")
-      glob("soul").must_equal %w[soul/index.js soul/README soul/test/]
+    describe "given relative path" do
+      it "must return files and directories given ." do
+        touch File.join(@dir, "index.js")
+        touch File.join(@dir, "README")
+        Dir.mkdir File.join(@dir, "test")
+        glob(".").must_equal %W[./index.js ./README ./test/]
+      end
+
+      it "must return files and directories given ./" do
+        touch File.join(@dir, "index.js")
+        touch File.join(@dir, "README")
+        Dir.mkdir File.join(@dir, "test")
+        glob("./").must_equal %W[./index.js ./README ./test/]
+      end
+
+      it "must return files and directories given .//" do
+        touch File.join(@dir, "index.js")
+        touch File.join(@dir, "README.txt")
+        Dir.mkdir File.join(@dir, "test")
+        glob(".//").must_equal %W[.//index.js .//README.txt .//test/]
+      end
+
+      it "must return files and directories given .///" do
+        touch File.join(@dir, "index.js")
+        touch File.join(@dir, "README.txt")
+        Dir.mkdir File.join(@dir, "test")
+        glob(".///").must_equal %W[.///index.js .///README.txt .///test/]
+      end
+
+      it "must return files and directories given ./test" do
+        touch File.join(@dir, "test", "test.js")
+        touch File.join(@dir, "test", "helpers.js")
+        glob("./test/").must_equal %W[./test/helpers.js ./test/test.js]
+      end
     end
 
-    it "must return files with a single slash given one" do
-      touch File.join(@dir, "node_modules", "soul", "index.js")
-      FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
-      glob("soul/").must_equal %w[soul/index.js soul/test/]
-    end
+    describe "given module name" do
+      it "must return files and directories given soul" do
+        touch File.join(@dir, "node_modules", "soul", "index.js")
+        touch File.join(@dir, "node_modules", "soul", "README")
+        FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
+        glob("soul").must_equal %w[soul/index.js soul/README soul/test/]
+      end
 
-    it "must return files with two slashes given two" do
-      touch File.join(@dir, "node_modules", "soul", "index.js")
-      FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
-      glob("soul//").must_equal %w[soul//index.js soul//test/]
-    end
+      it "must return files and directories given soul/" do
+        touch File.join(@dir, "node_modules", "soul", "index.js")
+        FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
+        glob("soul/").must_equal %w[soul/index.js soul/test/]
+      end
 
-    it "must return files with three slashes given three" do
-      touch File.join(@dir, "node_modules", "soul", "index.js")
-      FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
-      glob("soul///").must_equal %w[soul///index.js soul///test/]
+      it "must return files and directories given soul//" do
+        touch File.join(@dir, "node_modules", "soul", "index.js")
+        FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
+        glob("soul//").must_equal %w[soul//index.js soul//test/]
+      end
+
+      it "must return files and directories given soul///" do
+        touch File.join(@dir, "node_modules", "soul", "index.js")
+        FileUtils.mkpath File.join(@dir, "node_modules", "soul", "test")
+        glob("soul///").must_equal %w[soul///index.js soul///test/]
+      end
+
+      it "must return files and directories given soul/test" do
+        touch File.join(@dir, "node_modules", "soul", "test", "test.js")
+        touch File.join(@dir, "node_modules", "soul", "test", "helpers.js")
+        glob("soul/test").must_equal %w[soul/test/helpers.js soul/test/test.js]
+      end
     end
   end
 end

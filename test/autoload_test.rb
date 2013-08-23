@@ -337,17 +337,19 @@ describe "Autoloaded" do
         cmdline.sub(/^:\w+\s+/, "")
       end
 
-      it "must return all modules" do
+      it "must return files, directories and modules" do
         Dir.mkdir File.join(@dir, "node_modules")
         Dir.mkdir File.join(@dir, "node_modules", "require-guard")
         Dir.mkdir File.join(@dir, "node_modules", "export")
         Dir.mkdir File.join(@dir, "node_modules", "soul")
+        touch File.join(@dir, "index.js")
 
         $vim.edit File.join(@dir, "README.txt")
-        complete("Nedit ").must_equal "export/ require-guard/ soul/"
+        files = "export/ require-guard/ soul/ ./index.js ./package.json"
+        complete("Nedit ").must_equal files
       end
 
-      it "must return matching modules" do
+      it "must return only matching modules" do
         Dir.mkdir File.join(@dir, "node_modules")
         Dir.mkdir File.join(@dir, "node_modules", "export")
         Dir.mkdir File.join(@dir, "node_modules", "soul")
@@ -367,14 +369,14 @@ describe "Autoloaded" do
         complete("Nedit sou").must_equal "soul/ soulstash/"
       end
 
-      it "must return all files and directories in module's directory" do
+      it "must return files and directories in module's directory" do
         touch File.join(@dir, "node_modules", "soul", "index.js")
         touch File.join(@dir, "node_modules", "soul", "test", "test.js")
         $vim.edit File.join(@dir, "README.txt")
         complete("Nedit soul/").must_equal "soul/index.js soul/test/"
       end
 
-      it "must return all files and directories given a double slash" do
+      it "must return files and directories given a double slash" do
         touch File.join(@dir, "node_modules", "soul", "index.js")
         touch File.join(@dir, "node_modules", "soul", "test", "test.js")
         $vim.edit File.join(@dir, "README.txt")

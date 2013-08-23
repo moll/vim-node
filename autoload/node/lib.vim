@@ -2,10 +2,14 @@ function! node#lib#find(name, from)
 	return s:resolve(s:absolutize(a:name, a:from))
 endfunction
 
+let s:ABSPATH = '^/'
+let s:RELPATH = '\v^\.\.?(/|$)'
+let s:MODULE = '\v^(/|\.\.?(/|$))@!'
+
 function! s:absolutize(name, from)
-	if a:name =~# '^/'
+	if a:name =~# s:ABSPATH
 		return a:name
-	elseif a:name =~# '^\v\.\.?(/|$)'
+	elseif a:name =~# s:RELPATH
 		let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
 		return dir . "/" . a:name
 	else
@@ -64,29 +68,50 @@ function! s:resolveSuffix(path)
 endfunction
 
 let s:GLOB_WILDIGNORE = 1
-let s:GLOB_RETURN_LIST = 1
+let s:GLOB_RET_LIST = 1
 
 function! node#lib#glob(dir)
-	" Remove a single trailing slash, but keep extra ones.
-	let dir = substitute(a:dir, '/$', "", "")
+	let matches = []
 
-	if dir =~# '^/'
-		" Not handled for now.
-	elseif dir =~# '^\v\.\.?(/|$)'
-		" Not handled for now.
-	else
+	if a:dir =~# s:ABSPATH
+		let matches += s:glob(a:dir, 0)
+	endif
+
+	if empty(a:dir) || a:dir =~# s:MODULE
 		let root = b:node_root . "/node_modules"
-		let path = empty(dir) ? root : root . "/" . dir
-		let glob = fnameescape(path) . "/*"
-		let matches = glob(glob, s:GLOB_WILDIGNORE, s:GLOB_RETURN_LIST)
+		let matches += s:glob(empty(a:dir) ? root : root . "/" . a:dir, root)
+	endif
 
-		call map(matches, "v:val . (isdirectory(v:val) ? '/' : '')")
+	if empty(a:dir) || a:dir =~# s:RELPATH
+		let root = b:node_root
+		let relatives = s:glob(empty(a:dir) ? root : root . "/" . a:dir, root)
+
+		"call map(relatives, "substitute(v:val, '^\./\./', './', '')")
+		if empty(a:dir) | call map(relatives, "'./' . v:val") | endif
+		call filter(relatives, "v:val !~# '^\\.//*node_modules/$'")
+
+		let matches += relatives
+	endif
+
+	return matches
+endfunction
+
+function! s:glob(path, stripPrefix)
+	" Remove a single trailing slash because we're adding one with the glob.
+	let path = substitute(a:path, '/$', "", "")
+	let list = glob(fnameescape(path)."/*", s:GLOB_WILDIGNORE, s:GLOB_RET_LIST)
+
+	" Add slashes to directories, like /bin/ls.
+	call map(list, "v:val . (isdirectory(v:val) ? '/' : '')")
+
+	if !empty(a:stripPrefix)
 		" Counting and removing bytes intentionally as there's no substr function
 		" that takes character count, only bytes.
-		call map(matches, "strpart(v:val, len(root) + 1)")
-
-		return matches
+		let	prefix_length = len(a:stripPrefix) + 1
+		return map(list, "strpart(v:val, prefix_length)")
 	endif
+
+	return list
 endfunction
 
 function! s:uniq(list)
