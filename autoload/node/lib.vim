@@ -93,6 +93,8 @@ function! node#lib#glob(dir)
 		let matches += relatives
 	endif
 
+	return [a:dir, b:node_root, matches]
+
 	return matches
 endfunction
 
