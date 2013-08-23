@@ -237,6 +237,8 @@ describe "Lib" do
     end
 
     def glob(arg = "")
+      # Because of possible locale and filesystem case-sensitiveness
+      # differences, sort the output explicitly to be resistant.
       JSON.parse($vim.echo(%(node#lib#glob("#{arg}"))).gsub("'", '"')).sort
     end
 
