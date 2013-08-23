@@ -71,7 +71,9 @@ function! node#lib#glob(dir)
 	let dir = substitute(a:dir, '/$', "", "")
 
 	if dir =~# '^/'
+		" Not handled for now.
 	elseif dir =~# '^\v\.\.?(/|$)'
+		" Not handled for now.
 	else
 		let root = b:node_root . "/node_modules"
 		let path = empty(dir) ? root : root . "/" . dir
