@@ -28,7 +28,7 @@ function! s:initializeJavaScript()
 	setl path-=/usr/include
 	let &l:suffixesadd .= "," . join(g:node#suffixesadd, ",")
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
-	let &l:includeexpr = "node#find(v:fname, bufname('%'))"
+	let &l:includeexpr = "node#lib#find(v:fname, bufname('%'))"
 
 	if !hasmapto("<Plug>NodeGotoFile")
 		" Split gotofiles don't take a count for the new window's width, but for
@@ -40,11 +40,6 @@ function! s:initializeJavaScript()
 	endif
 endfunction
 
-function! node#find(name, ...)
-	let from = a:0 == 1 ? a:1 : bufname("%")
-	return node#lib#find(a:name, from)
-endfunction
-
 function! s:edit(name, from, ...)
 	if empty(a:name) | return | endif
 	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
@@ -54,7 +49,7 @@ function! s:edit(name, from, ...)
 	if a:name !~# '^\v(/|\./|\.\./)' && filereadable(dir . "/" . a:name)
 		let path = dir . "/" . a:name
 	else
-		let path = node#find(a:name, dir)
+		let path = node#lib#find(a:name, dir)
 	end
 
 	if empty(path)

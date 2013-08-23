@@ -1,8 +1,6 @@
 require_relative "../helper"
 require "json"
 
-# Test lib through public API as much as possible.
-
 describe "Lib" do
   include WithTemporaryDirectory
 
@@ -10,9 +8,9 @@ describe "Lib" do
     FileUtils.touch File.join(@dir, "package.json")
   end
 
-  describe "node#find" do
+  describe "node#lib#find" do
     def find(path)
-      File.realpath($vim.echo(%(node#find("#{path}"))))
+      File.realpath($vim.echo(%(node#lib#find("#{path}", expand("%")))))
     end
 
     it "must return ./README before ./README.js" do
@@ -97,13 +95,13 @@ describe "Lib" do
     it "must not find ./index/index.js given ./" do
       touch File.join(@dir, "index", "index.js")
       $vim.edit File.join(@dir, "other.js")
-      $vim.echo(%(empty(node#find("./")))).must_equal "1"
+      $vim.echo(%(empty(node#lib#find("./", expand("%"))))).must_equal "1"
     end
 
     it "must not find ./.js given ./" do
       touch File.join(@dir, ".js")
       $vim.edit File.join(@dir, "other.js")
-      $vim.echo(%(empty(node#find("./")))).must_equal "1"
+      $vim.echo(%(empty(node#lib#find("./", expand("%"))))).must_equal "1"
     end
 
     it "must return ../index.js given .." do
@@ -222,12 +220,12 @@ describe "Lib" do
 
     it "must return empty when looking for nothing" do
       $vim.edit File.join(@dir, "index.js")
-      $vim.echo(%(empty(node#find("")))).must_equal "1"
+      $vim.echo(%(empty(node#lib#find("", expand("%"))))).must_equal "1"
     end
 
     it "must return empty when nothing found" do
       $vim.edit File.join(@dir, "index.js")
-      $vim.echo(%(empty(node#find("new")))).must_equal "1"
+      $vim.echo(%(empty(node#lib#find("new", expand("%"))))).must_equal "1"
     end
   end
 end
