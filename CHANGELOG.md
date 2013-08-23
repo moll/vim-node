@@ -1,3 +1,11 @@
+## Unreleased
+- Adds `:Nedit` command for editing modules or files relative to the Node project root.
+  For example: `:Nedit any-module/lib` or `:Nedit /package`.
+- Adds `:Nopen` command which behaves like `:Nedit`, but also `lcd`s to the module's directory.
+- Makes `<Plug>NodeGotoFile` available for your mapping in any Node project file, but maps it to `gf` automatically only on JavaScript files.
+- Maps `gf` also for JSON files for easy jumping to modules.
+- Makes `:Nedit` and `:Nopen` available immediately when starting Vim in a directory of a Node project.
+
 ## 0.5.1 (Aug 8, 2013)
 - Adds `Node` autocommand.  
   Use it with `autocmd User Node` to customize settings for files in Node projects.

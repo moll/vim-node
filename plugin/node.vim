@@ -19,5 +19,6 @@ endfunction
 
 augroup Node
 	au!
+	au VimEnter * if empty(expand("<amatch>")) | call s:detect(getcwd()) | endif
 	au BufRead,BufNewFile * call s:detect(expand("<amatch>:p"))
 augroup end

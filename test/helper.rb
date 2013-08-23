@@ -11,8 +11,8 @@ begin
 rescue LoadError
 end
 
-vimrc = File.expand_path("../vimrc", __FILE__)
-$vim = Vimrunner::Server.new(:vimrc => vimrc).start
+$vimrc = File.expand_path("../vimrc", __FILE__)
+$vim = Vimrunner::Server.new(:vimrc => $vimrc).start
 Minitest::Unit.after_tests { $vim.kill }
 
 module WithTemporaryDirectory
@@ -34,7 +34,7 @@ module WithTemporaryDirectory
 end
 
 def touch(path, contents = nil)
-  FileUtils.mkdir_p File.dirname(path)
+  FileUtils.mkpath File.dirname(path)
   return FileUtils.touch(path) if contents.nil? || contents.empty?
   File.open(path, "w") {|f| f.write contents }
 end

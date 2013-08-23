@@ -7,7 +7,7 @@ love:
 	@echo "Feel like makin' love."
 
 test: $(shell find . -name "*_test.rb")
-	@bundle exec ruby -e "ARGV.each(&method(:require))" $(addprefix ./,$^)
+	@ruby -rbundler/setup $(addprefix -r./,$^) -e "" -- $(TEST_OPTS)
 
 autotest:
 	@bundle exec guard start --no-interactions
