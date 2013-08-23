@@ -40,16 +40,6 @@ describe "Autoloaded" do
       $vim.echo(%(bufname("%"))).must_equal File.join(@dir, "README.txt")
     end
 
-    it "must edit ./README.txt relative to file" do
-      touch File.join(@dir, "foo", "index.js"), %(// Please read ./README.txt)
-      touch File.join(@dir, "foo", "README.txt")
-
-      $vim.edit File.join(@dir, "foo", "index.js")
-      $vim.feedkeys "$gf"
-      bufname = File.realpath($vim.echo(%(bufname("%"))))
-      bufname.must_equal File.join(@dir, "foo", "README.txt")
-    end
-
     it "must edit README before README.js" do
       touch File.join(@dir, "index.js"), "// Please read README"
       touch File.join(@dir, "README")
@@ -61,6 +51,26 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "README")
     end
 
+    it "must edit ./README.txt relative to file" do
+      touch File.join(@dir, "foo", "index.js"), %(// Please read ./README.txt)
+      touch File.join(@dir, "foo", "README.txt")
+
+      $vim.edit File.join(@dir, "foo", "index.js")
+      $vim.feedkeys "$gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "foo", "README.txt")
+    end
+
+    it "must edit /.../README.txt" do
+      touch File.join(@dir, "index.js"), %(// Read #@dir/lib/README.txt)
+      touch File.join(@dir, "lib", "README.txt")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "$gf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "lib", "README.txt")
+    end
+
     it "must open ./other.js relative to file" do
       touch File.join(@dir, "foo", "index.js"), %(require("./other")) 
       touch File.join(@dir, "foo", "other.js")
@@ -70,19 +80,6 @@ describe "Autoloaded" do
  
       bufname = File.realpath($vim.echo(%(bufname("%"))))
       bufname.must_equal File.join(@dir, "foo", "other.js")
-    end
-
-    # This is the last failsafe to make sure our custom gf handler runs, because
-    # default Vim opens the directory instead.
-    it "must edit ./other.js before ./other/index.js given /other" do
-      touch File.join(@dir, "index.js"), %(require("./other")) 
-      touch File.join(@dir, "other.js")
-      touch File.join(@dir, "other", "index.js")
- 
-      $vim.edit File.join(@dir, "index.js")
-      $vim.feedkeys "f.gf"
-      bufname = File.realpath($vim.echo(%(bufname("%"))))
-      bufname.must_equal File.join(@dir, "other.js")
     end
 
     it "must edit ./index.js given ." do
@@ -261,15 +258,7 @@ describe "Autoloaded" do
       $vim.echo("exists(':Nedit')").must_equal FULL_COMMAND_MATCH
     end
 
-    it "must edit /README.txt" do
-      touch File.join(@dir, "README.txt")
-      $vim.edit File.join(@dir, "CHANGELOG.txt")
-      $vim.command "Nedit /README.txt"
-      bufname = File.realpath($vim.echo(%(bufname("%"))))
-      bufname.must_equal File.join(@dir, "README.txt")
-    end
-
-    it "must edit /README.txt given ./README.txt" do
+    it "must edit ./README.txt" do
       touch File.join(@dir, "README.txt")
       $vim.edit File.join(@dir, "CHANGELOG.txt")
       $vim.command "Nedit ./README.txt"
@@ -277,7 +266,7 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "README.txt")
     end
 
-    it "must edit /README.txt given ./README.txt relative to root" do
+    it "must edit ./README.txt relative to node_root" do
       touch File.join(@dir, "README.txt")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "CHANGELOG.txt")
@@ -286,15 +275,15 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "README.txt")
     end
 
-    it "must edit /other.js given /other" do
-      touch File.join(@dir, "other.js")
+    it "must edit /.../README.txt" do
+      touch File.join(@dir, "lib", "README.txt")
       $vim.edit File.join(@dir, "CHANGELOG.txt")
-      $vim.command "Nedit /other"
+      $vim.command "Nedit #@dir/lib/README.txt"
       bufname = File.realpath($vim.echo(%(bufname("%"))))
-      bufname.must_equal File.join(@dir, "other.js")
+      bufname.must_equal File.join(@dir, "lib", "README.txt")
     end
 
-    it "must edit /other.js given ./other relative to root" do
+    it "must edit ./other.js relative to node_root" do
       touch File.join(@dir, "other.js")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "CHANGELOG.txt")
@@ -303,15 +292,7 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "other.js")
     end
 
-    it "must edit /index.js given /" do
-      touch File.join(@dir, "index.js")
-      $vim.edit File.join(@dir, "CHANGELOG.txt")
-      $vim.command "Nedit /"
-      bufname = File.realpath($vim.echo(%(bufname("%"))))
-      bufname.must_equal File.join(@dir, "index.js")
-    end
-
-    it "must edit /index.js given ." do
+    it "must edit ./index.js given ." do
       touch File.join(@dir, "index.js")
       $vim.edit File.join(@dir, "CHANGELOG.txt")
       $vim.command "Nedit ."
@@ -319,7 +300,7 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "index.js")
     end
 
-    it "must edit /index.js given . relative to root" do
+    it "must edit ./index.js given . relative to node_root" do
       touch File.join(@dir, "index.js")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "CHANGELOG.txt")
@@ -328,7 +309,7 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "index.js")
     end
 
-    it "must edit /index.js given ./" do
+    it "must edit ./index.js given ./" do
       touch File.join(@dir, "index.js")
       $vim.edit File.join(@dir, "CHANGELOG.txt")
       $vim.command "Nedit ./"

@@ -61,8 +61,7 @@ endfunction
 
 function! s:nedit(name, from, ...)
 	let command = a:0 == 1 ? a:1 : "edit"
-	let name = a:name =~# '^/' ? "." . a:name : a:name
-	call s:edit(name, b:node_root, command)
+	call s:edit(a:name, b:node_root, command)
 endfunction
 
 function! s:nopen(name, from, ...)
