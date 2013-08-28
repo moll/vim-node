@@ -27,7 +27,7 @@ endfunction
 function! node#lib#version()
 	if exists("b:node_version") | return b:node_version | endif
 	if !executable("node") | let b:node_version = "" | return | endif
-	let b:node_version = matchstr(system("node --version"), '\v^v?\zs[^\n]+')
+	let b:node_version = matchstr(system("node --version"), '^v\?\zs[0-9.]\+')
 	return b:node_version
 endfunction
 
