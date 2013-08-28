@@ -1,3 +1,7 @@
+## Unreleased
+- Adds support for opening core Node.js modules, such as `http`, `util`, etc. with `gf` or `:Nedit`.
+  These are opened from online via Vim's `Netrw` plugin because they're compiled into Node's binary and unavailable otherwise.
+
 ## 0.6.0 (Aug 23, 2013)
 - Adds `:Nedit` command for editing modules or files relative to the Node project root.
   For example: `:Nedit any-module/lib` or `:Nedit ./package`.
