@@ -38,3 +38,11 @@ def touch(path, contents = nil)
   return FileUtils.touch(path) if contents.nil? || contents.empty?
   File.open(path, "w") {|f| f.write contents }
 end
+
+CORE_MODULES = %w[_debugger _http_agent _http_client _http_common
+  _http_incoming _http_outgoing _http_server _linklist _stream_duplex
+  _stream_passthrough _stream_readable _stream_transform _stream_writable
+  _tls_legacy _tls_wrap assert buffer child_process cluster console
+  constants crypto dgram dns domain events freelist fs http https module
+  net os path punycode querystring readline repl smalloc stream
+  string_decoder sys timers tls tty url util vm zlib]

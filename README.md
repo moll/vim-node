@@ -20,6 +20,7 @@ This is just the first release to get the nodes rolling. If you've collected gre
 - Use `[I` etc. to look for a keyword in required files (Sets Vim's `&include`).
 - Use `:Nedit` to quickly edit any module, file in a module or your project file.
 - Use `:Nopen` to quickly edit any module and `lcd` to its directory.
+- Lets you even open Node's core modules. They're shown straight from Node's online repository without you having to download everything.
 - Node.vim itself is tested with a thorough automated integration test suite! No cowboy coding here!
 
 Expect more to come soon and feel free to let me know what you're after!

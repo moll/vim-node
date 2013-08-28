@@ -337,7 +337,10 @@ describe "Autoloaded" do
         cmdline.sub(/^:\w+\s+/, "")
       end
 
-      it "must return files, directories and modules" do
+      public_core_modules = CORE_MODULES.select {|m| m[0] != "_" }
+      private_core_modules = CORE_MODULES.select {|m| m[0] == "_" }
+
+      it "must return files, directories, modules" do
         Dir.mkdir File.join(@dir, "node_modules")
         Dir.mkdir File.join(@dir, "node_modules", "require-guard")
         Dir.mkdir File.join(@dir, "node_modules", "export")
@@ -345,8 +348,20 @@ describe "Autoloaded" do
         touch File.join(@dir, "index.js")
 
         $vim.edit File.join(@dir, "README.txt")
-        files = "export/ require-guard/ soul/ ./index.js ./package.json"
-        complete("Nedit ").must_equal files
+        files = %w[export/ require-guard/ soul/ ./index.js ./package.json]
+        all = public_core_modules + files
+        complete("Nedit ").split.sort.must_equal all.sort
+      end
+
+      it "must return only public core modules" do
+        $vim.edit File.join(@dir, "README.txt")
+        modules = public_core_modules + ["./package.json"]
+        complete("Nedit ").must_equal modules.join(" ")
+      end
+
+      it "must return private core modules if explicitly asked" do
+        $vim.edit File.join(@dir, "README.txt")
+        complete("Nedit _").must_equal private_core_modules.join(" ")
       end
 
       it "must return only matching modules" do
@@ -356,7 +371,8 @@ describe "Autoloaded" do
         Dir.mkdir File.join(@dir, "node_modules", "soulstash")
 
         $vim.edit File.join(@dir, "README.txt")
-        complete("Nedit s").must_equal "soul/ soulstash/"
+        modules = "smalloc stream string_decoder sys soul/ soulstash/"
+        complete("Nedit s").must_equal modules
       end
 
       it "must not return modules with matching bit in the middle" do

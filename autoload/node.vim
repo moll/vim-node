@@ -73,6 +73,9 @@ endfunction
 function! s:complete(arg, cmd, cursor)
 	let matches = node#lib#glob(s:dirname(a:arg))
 
+	" Show private modules (_*) only if explicitly asked:
+	if a:arg[0] != "_" | call filter(matches, "v:val[0] != '_'") | endif
+
 	let filter = "stridx(v:val, a:arg) == 0"
 	let ignorecase = 0
 	let ignorecase = ignorecase || exists("&fileignorecase") && &fileignorecase
