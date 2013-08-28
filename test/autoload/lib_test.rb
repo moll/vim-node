@@ -247,14 +247,21 @@ describe "Lib" do
         touch File.join(@dir, "index.js")
         touch File.join(@dir, "README.txt")
         Dir.mkdir File.join(@dir, "test")
-        glob.must_equal %w[./README.txt ./index.js ./test/]
+
+        files = %w[./README.txt ./index.js ./test/]
+        glob.must_equal (CORE_MODULES + files).sort
       end
 
-      it "must return modules" do
+      it "must return modules and core modules" do
         FileUtils.mkpath File.join(@dir, "node_modules", "require-guard")
         FileUtils.mkpath File.join(@dir, "node_modules", "export")
         FileUtils.mkpath File.join(@dir, "node_modules", "soul")
-        glob.must_equal %w[export/ require-guard/ soul/]
+        glob.must_equal (CORE_MODULES + %w[export/ require-guard/ soul/]).sort
+      end
+
+      it "must return core modules without slashes" do
+        glob.must_equal CORE_MODULES
+        glob.wont_equal /\//
       end
 
       it "must return files, directories and modules" do
@@ -263,12 +270,14 @@ describe "Lib" do
         touch File.join(@dir, "index.js")
         touch File.join(@dir, "README.txt")
         Dir.mkdir File.join(@dir, "test")
-        glob.must_equal %w[./README.txt ./index.js ./test/ export/ soul/]
+
+        files = %w[./README.txt ./index.js ./test/ export/ soul/]
+        glob.must_equal (CORE_MODULES + files).sort
       end
 
       it "must not return the node_modules directory" do
         FileUtils.mkpath File.join(@dir, "node_modules")
-        glob.must_equal %w[]
+        glob.must_equal CORE_MODULES
       end
     end
 

@@ -1,10 +1,20 @@
-function! node#lib#find(name, from)
-	return s:resolve(s:absolutize(a:name, a:from))
-endfunction
-
 let s:ABSPATH = '^/'
 let s:RELPATH = '\v^\.\.?(/|$)'
 let s:MODULE = '\v^(/|\.\.?(/|$))@!'
+
+let s:CORE_MODULES = ["_debugger", "_http_agent", "_http_client",
+	\ "_http_common", "_http_incoming", "_http_outgoing", "_http_server",
+	\ "_linklist", "_stream_duplex", "_stream_passthrough", "_stream_readable",
+	\ "_stream_transform", "_stream_writable", "_tls_legacy", "_tls_wrap",
+	\ "assert", "buffer", "child_process", "cluster", "console", "constants",
+	\ "crypto", "dgram", "dns", "domain", "events", "freelist", "fs", "http",
+	\ "https", "module", "net", "os", "path", "punycode", "querystring",
+	\ "readline", "repl", "smalloc", "stream", "string_decoder", "sys",
+	\ "timers", "tls", "tty", "url", "util", "vm", "zlib"]
+
+function! node#lib#find(name, from)
+	return s:resolve(s:absolutize(a:name, a:from))
+endfunction
 
 function! s:absolutize(name, from)
 	if a:name =~# s:ABSPATH
@@ -69,24 +79,28 @@ endfunction
 
 let s:GLOB_WILDIGNORE = 1
 
-function! node#lib#glob(dir)
+function! node#lib#glob(name)
 	let matches = []
 
-	if a:dir =~# s:ABSPATH
-		let matches += s:glob(a:dir, 0)
+	if empty(a:name)
+		let matches += s:CORE_MODULES
 	endif
 
-	if empty(a:dir) || a:dir =~# s:MODULE
+	if empty(a:name) || a:name =~# s:MODULE
 		let root = b:node_root . "/node_modules"
-		let matches += s:glob(empty(a:dir) ? root : root . "/" . a:dir, root)
+		let matches += s:glob(empty(a:name) ? root : root . "/" . a:name, root)
 	endif
 
-	if empty(a:dir) || a:dir =~# s:RELPATH
+	if a:name =~# s:ABSPATH
+		let matches += s:glob(a:name, 0)
+	endif
+
+	if empty(a:name) || a:name =~# s:RELPATH
 		let root = b:node_root
-		let relatives = s:glob(empty(a:dir) ? root : root . "/" . a:dir, root)
+		let relatives = s:glob(empty(a:name) ? root : root . "/" . a:name, root)
 
 		"call map(relatives, "substitute(v:val, '^\./\./', './', '')")
-		if empty(a:dir) | call map(relatives, "'./' . v:val") | endif
+		if empty(a:name) | call map(relatives, "'./' . v:val") | endif
 		call filter(relatives, "v:val !~# '^\\.//*node_modules/$'")
 
 		let matches += relatives

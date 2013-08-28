@@ -21,5 +21,11 @@ publish:
 
 tag:
 	git tag "v$(VERSION)"
+
+list-core-modules:
+	wget "https://github.com/joyent/node/archive/master.tar.gz" -O- |\
+	tar tf - |\
+	egrep "^node[^/]*/lib/.+" |\
+	xargs -n1 basename -s .js
 	
 .PHONY: love test autotest pack publish tag
