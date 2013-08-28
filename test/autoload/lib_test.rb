@@ -8,9 +8,21 @@ describe "Lib" do
     Dir.mkdir File.join(@dir, "node_modules")
   end
 
+  def set_node_version(version)
+    executable = File.join(@dir, "node")
+    touch executable, <<-end.strip
+      #!/bin/sh
+      [ $# != 1 -o "$1" != --version  ] && exit 1
+      echo "v#{version}"
+    end
+    File.chmod 0755, executable
+    $vim.command(%(let $PATH = "#@dir:" . $PATH))
+  end
+
   describe "node#lib#find" do
-    def find(path)
-      File.realpath($vim.echo(%(node#lib#find("#{path}", expand("%")))))
+    def find(name)
+      path = $vim.echo(%(node#lib#find("#{name}", expand("%"))))
+      File.exists?(path) ? File.realpath(path) : path
     end
 
     it "must return ./README before ./README.js" do
@@ -227,6 +239,22 @@ describe "Lib" do
       $vim.edit File.join(@dir, "index.js")
       $vim.echo(%(empty(node#lib#find("new", expand("%"))))).must_equal "1"
     end
+
+    it "must return URL for core module for current Node version" do
+      set_node_version "0.13.37"
+      $vim.edit File.join(@dir, "index.js")
+      url = "http://rawgithub.com/joyent/node/v0.13.37/lib/assert.js"
+      find("assert").must_equal url
+    end
+
+    it "must return URL for core module on master if no Node fails" do
+      touch File.join(@dir, "node"), "#!/bin/sh\nexit 1"
+      File.chmod 0755, File.join(@dir, "node")
+      $vim.edit File.join(@dir, "index.js")
+      $vim.command(%(let $PATH = "#@dir:" . $PATH))
+      url = "http://rawgithub.com/joyent/node/master/lib/assert.js"
+      find("assert").must_equal url
+    end
   end
 
   describe "node#lib#glob" do
@@ -386,6 +414,13 @@ describe "Lib" do
         touch File.join(@dir, "node_modules", "soul", "test", "helpers.js")
         glob("soul/test").must_equal %w[soul/test/helpers.js soul/test/test.js]
       end
+    end
+  end
+
+  describe "node#lib#version" do
+    it "should return current Node's version" do
+      set_node_version "0.13.37"
+      $vim.echo("node#lib#version()").must_equal "0.13.37"
     end
   end
 end

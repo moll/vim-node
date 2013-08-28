@@ -2,6 +2,8 @@ let s:ABSPATH = '^/'
 let s:RELPATH = '\v^\.\.?(/|$)'
 let s:MODULE = '\v^(/|\.\.?(/|$))@!'
 
+" Damn Netrw can't handle HTTPS at all. It's 2013! Insecure bastard!
+let s:CORE_URL_PREFIX = "http://rawgithub.com/joyent/node"
 let s:CORE_MODULES = ["_debugger", "_http_agent", "_http_client",
 	\ "_http_common", "_http_incoming", "_http_outgoing", "_http_server",
 	\ "_linklist", "_stream_duplex", "_stream_passthrough", "_stream_readable",
@@ -13,7 +15,20 @@ let s:CORE_MODULES = ["_debugger", "_http_agent", "_http_client",
 	\ "timers", "tls", "tty", "url", "util", "vm", "zlib"]
 
 function! node#lib#find(name, from)
+	if index(s:CORE_MODULES, a:name) != -1
+		let l:version = node#lib#version()
+		let l:version = empty(l:version) ? "master" : "v" . l:version
+		return s:CORE_URL_PREFIX ."/". l:version ."/lib/". a:name .".js"
+	endif
+
 	return s:resolve(s:absolutize(a:name, a:from))
+endfunction
+
+function! node#lib#version()
+	if exists("b:node_version") | return b:node_version | endif
+	if !executable("node") | let b:node_version = "" | return | endif
+	let b:node_version = matchstr(system("node --version"), '\v^v?\zs[^\n]+')
+	return b:node_version
 endfunction
 
 function! s:absolutize(name, from)
