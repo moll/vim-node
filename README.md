@@ -1,6 +1,6 @@
 Node.vim
 ========
-[![Build status](https://travis-ci.org/moll/vim-node.png)](https://travis-ci.org/moll/vim-node)
+[![Build status](https://travis-ci.org/moll/vim-node.png?branch=master)](https://travis-ci.org/moll/vim-node)
 
 Tools to make Vim superb for developing with Node.js.  
 It's the Node equivalent of [Rails.vim (vimscript #1567)](https://github.com/tpope/vim-rails) and [Rake.vim (vimscript #3669)](https://github.com/tpope/vim-rake).
