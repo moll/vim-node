@@ -1,3 +1,6 @@
+## Unreleased
+- Adds `node` as a core module so you could use `:Nedit node` to open the file Node uses to bootstrap its core.
+
 ## 0.7.0 (Aug 28, 2013)
 - Adds support for opening core Node.js modules, such as `http`, `util`, etc. with `gf` or `:Nedit`.
   They're shown straight from Node's online repository without you having to download everything.

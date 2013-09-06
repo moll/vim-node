@@ -247,13 +247,29 @@ describe "Lib" do
       find("assert").must_equal url
     end
 
-    it "must return URL for core module on master if no Node fails" do
+    it "must return URL for core module on master if no Node version" do
       touch File.join(@dir, "node"), "#!/bin/sh\nexit 1"
       File.chmod 0755, File.join(@dir, "node")
       $vim.edit File.join(@dir, "index.js")
       $vim.command(%(let $PATH = "#@dir:" . $PATH))
       url = "http://rawgithub.com/joyent/node/master/lib/assert.js"
       find("assert").must_equal url
+    end
+
+    it "must return URL for node.js for current Node version" do
+      set_node_version "0.13.37"
+      $vim.edit File.join(@dir, "index.js")
+      url = "http://rawgithub.com/joyent/node/v0.13.37/src/node.js"
+      find("node").must_equal url
+    end
+
+    it "must return URL for node.js on master if no Node version" do
+      touch File.join(@dir, "node"), "#!/bin/sh\nexit 1"
+      File.chmod 0755, File.join(@dir, "node")
+      $vim.edit File.join(@dir, "index.js")
+      $vim.command(%(let $PATH = "#@dir:" . $PATH))
+      url = "http://rawgithub.com/joyent/node/master/src/node.js"
+      find("node").must_equal url
     end
   end
 
@@ -290,6 +306,11 @@ describe "Lib" do
       it "must return core modules without slashes" do
         glob.must_equal CORE_MODULES
         glob.wont_equal /\//
+      end
+
+      # Even though node.js is the bootstrapper file in src/.
+      it "must return \"node\" as one of those core modules" do
+        glob.must_include "node"
       end
 
       it "must return files, directories and modules" do

@@ -10,7 +10,7 @@ let s:CORE_MODULES = ["_debugger", "_http_agent", "_http_client",
 	\ "_stream_transform", "_stream_writable", "_tls_legacy", "_tls_wrap",
 	\ "assert", "buffer", "child_process", "cluster", "console", "constants",
 	\ "crypto", "dgram", "dns", "domain", "events", "freelist", "fs", "http",
-	\ "https", "module", "net", "os", "path", "punycode", "querystring",
+	\ "https", "module", "net", "node", "os", "path", "punycode", "querystring",
 	\ "readline", "repl", "smalloc", "stream", "string_decoder", "sys",
 	\ "timers", "tls", "tty", "url", "util", "vm", "zlib"]
 
@@ -18,7 +18,8 @@ function! node#lib#find(name, from)
 	if index(s:CORE_MODULES, a:name) != -1
 		let l:version = node#lib#version()
 		let l:version = empty(l:version) ? "master" : "v" . l:version
-		return s:CORE_URL_PREFIX ."/". l:version ."/lib/". a:name .".js"
+		let l:dir = a:name == "node" ? "src" : "lib"
+		return s:CORE_URL_PREFIX ."/". l:version ."/". l:dir ."/". a:name .".js"
 	endif
 
 	return s:resolve(s:absolutize(a:name, a:from))
