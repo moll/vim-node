@@ -1,4 +1,4 @@
-## Unreleased
+## 0.8.0 (Sep 6, 2013)
 - Adds `node` as a core module so you could use `:Nedit node` to open the file Node uses to bootstrap its core.
 
 ## 0.7.0 (Aug 28, 2013)
