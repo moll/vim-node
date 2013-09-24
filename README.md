@@ -7,7 +7,7 @@ It's the Node equivalent of [Rails.vim (vimscript #1567)](https://github.com/tpo
 
 This is just the first release to get the nodes rolling. If you've collected great helpers and shortcuts that help you work with Node, please share them via [email](mailto:andri@dot.ee), [Twitter](https://twitter.com/theml) or [GitHub issues](https://github.com/moll/vim-node/issues) so we could incorporate them here, too! Thanks!
 
-### Tour
+### Basic functions
 
 - Use `gf` on paths or requires to open the same file Node.js would.
 - Use `gf` on `require(".")` to open `./index.js`
@@ -22,6 +22,37 @@ This is just the first release to get the nodes rolling. If you've collected gre
 - Use `:Nopen` to quickly edit any module and `lcd` to its directory.
 - Lets you even open Node's core modules. They're shown straight from Node's online repository without you having to download everything.
 - Node.vim itself is tested with a thorough automated integration test suite! No cowboy coding here!
+
+### `require()` helper
+
+The plugin defines the commands `:Require` and `:Unrequire`, and aliases them
+to `:R` and `:UR` if those command names are available.  These commands will
+manage the `require()` statements in a Node.js module for you, keeping the
+statements sorted and aligned.
+
+These commands assume that all `require()` statements appear in a single block
+near the top of the file with no blank lines in between statements.  They can
+be used as follows:
+
+    # Add: async = require('async')
+    :Require async
+
+    # Add: somelib = require('./lib/somelib')
+    :Require ./lib/somelib
+
+    # Add: _ = require('lodash')
+    :Require _=lodash
+
+    # Add: MongoClient = require('mongodb').MongoClient
+    :Require MongoClient=mongodb.MongoClient
+    # or:
+    :Require mongodb.MongoClient
+
+Those parameters will all work with the corresponding `:Unrequire` command, but
+there, all you really need to specify is the module name (the part inside the
+`require('...')` quotes).
+
+### Improvements
 
 Expect more to come soon and feel free to let me know what you're after!
 
