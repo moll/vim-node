@@ -4,18 +4,9 @@ let s:MODULE = '\v^(/|\.\.?(/|$))@!'
 
 " Damn Netrw can't handle HTTPS at all. It's 2013! Insecure bastard!
 let s:CORE_URL_PREFIX = "http://rawgithub.com/joyent/node"
-let s:CORE_MODULES = ["_debugger", "_http_agent", "_http_client",
-	\ "_http_common", "_http_incoming", "_http_outgoing", "_http_server",
-	\ "_linklist", "_stream_duplex", "_stream_passthrough", "_stream_readable",
-	\ "_stream_transform", "_stream_writable", "_tls_legacy", "_tls_wrap",
-	\ "assert", "buffer", "child_process", "cluster", "console", "constants",
-	\ "crypto", "dgram", "dns", "domain", "events", "freelist", "fs", "http",
-	\ "https", "module", "net", "node", "os", "path", "punycode", "querystring",
-	\ "readline", "repl", "smalloc", "stream", "string_decoder", "sys",
-	\ "timers", "tls", "tty", "url", "util", "vm", "zlib"]
 
 function! node#lib#find(name, from)
-	if index(s:CORE_MODULES, a:name) != -1
+	if index(g:node#coreModules, a:name) != -1
 		let l:version = node#lib#version()
 		let l:version = empty(l:version) ? "master" : "v" . l:version
 		let l:dir = a:name == "node" ? "src" : "lib"
@@ -86,6 +77,21 @@ function! s:mainFromPackage(path)
 	endfor
 endfunction
 
+function! node#lib#deps(path)
+	let inDeps = 0
+	let deps = []
+	for line in readfile(a:path)
+		if line =~# '\v^\s*"(devDependencies|dependencies)"\s*:\s*\{\s*$'
+			let inDeps = 1
+		elseif line =~# '^\s*}\s*,?\s*$'
+			let inDeps = 0
+		elseif inDeps
+			call add(deps, matchstr(line, '^\s*"\zs[^"]\+\ze"'))
+		endif
+	endfor
+	return deps
+endfunction
+
 function! s:resolveSuffix(path)
 	for suffix in s:uniq([""] + g:node#suffixesadd + split(&l:suffixesadd, ","))
 		let path = a:path . suffix
@@ -99,7 +105,7 @@ function! node#lib#glob(name)
 	let matches = []
 
 	if empty(a:name)
-		let matches += s:CORE_MODULES
+		let matches += g:node#coreModules
 	endif
 
 	if empty(a:name) || a:name =~# s:MODULE

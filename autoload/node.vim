@@ -1,6 +1,16 @@
 let node#suffixesadd = [".js", ".json"]
 let node#filetypes = ["javascript", "json"]
 
+let node#coreModules = ["_debugger", "_http_agent", "_http_client",
+	\ "_http_common", "_http_incoming", "_http_outgoing", "_http_server",
+	\ "_linklist", "_stream_duplex", "_stream_passthrough", "_stream_readable",
+	\ "_stream_transform", "_stream_writable", "_tls_legacy", "_tls_wrap",
+	\ "assert", "buffer", "child_process", "cluster", "console", "constants",
+	\ "crypto", "dgram", "dns", "domain", "events", "freelist", "fs", "http",
+	\ "https", "module", "net", "node", "os", "path", "punycode", "querystring",
+	\ "readline", "repl", "smalloc", "stream", "string_decoder", "sys",
+	\ "timers", "tls", "tty", "url", "util", "vm", "zlib"]
+
 function! node#initialize(root)
 	let b:node_root = a:root
 	call s:initializeCommands()
