@@ -77,6 +77,16 @@ autocmd User Node
   \ endif
 ```
 
+
+Plugins
+-------
+Install Node.vim first, then install one or more of the following plugins in separate folders:
+
+- [require() helper](https://github.com/nylen/vim-node-require-helper)
+
+Please write more plugins!
+
+
 License
 -------
 Node.vim is released under a *Lesser GNU Affero General Public License*, which in summary means:
