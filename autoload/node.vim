@@ -53,10 +53,10 @@ function! s:edit(name, from, ...)
 	end
 
 	if empty(path)
-		return s:error("E447: Can't find file \"" . a:name . "\" in path")
+		normal gf
+  else
+		exe command . " " . fnameescape(path)
 	endif
-
-	exe command . " " . fnameescape(path)
 endfunction
 
 function! s:nedit(name, from, ...)
