@@ -10,6 +10,7 @@ function! s:detect(path)
 		let is_node = is_node || filereadable(path . "/package.json")
 		let is_node = is_node || isdirectory(path . "/node_modules")
 		if is_node | return node#initialize(path) | endif
+		call node#initializeCommands()
 
 		let parent = fnamemodify(path, ":h")
 		if parent == path | return | endif
