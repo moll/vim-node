@@ -1,4 +1,4 @@
-## Unreleased
+## 0.8.1 (Apr 15, 2014)
 - Updates the URL from which Node.vim downloads Node core module source files.  
   Uses <http://rawgit.com> which used to be named <http://rawgithub.com>.  
   Because of Vim Netrw's inability to handle HTTPS, it does so over HTTP. Sorry.
