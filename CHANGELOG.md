@@ -1,3 +1,8 @@
+## Unreleased
+- Updates the URL from which Node.vim downloads Node core module source files.  
+  Uses <http://rawgit.com> which used to be named <http://rawgithub.com>.  
+  Because of Vim Netrw's inability to handle HTTPS, it does so over HTTP. Sorry.
+
 ## 0.8.0 (Sep 6, 2013)
 - Adds `node` as a core module so you could use `:Nedit node` to open the file Node uses to bootstrap its core.
 
