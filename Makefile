@@ -1,19 +1,23 @@
-NAME := node
-TITLE := Node.vim
-VERSION := 0.8.0
-ID := 4674
+NAME = node
+TITLE = Node.vim
+VERSION = 0.8.0
+ID = 4674
+TEST_OPTS =
 
 love:
 	@echo "Feel like makin' love."
 
-test: $(shell find . -name "*_test.rb")
+test: spec
+autotest: autospec
+
+spec: $(shell find . -name "*_test.rb")
 	@ruby -rbundler/setup $(addprefix -r./,$^) -e "" -- $(TEST_OPTS)
 
-autotest:
+autospec:
 	@bundle exec guard start --no-interactions
 
 pack:
-	rm -rf "$(NAME)-$(VERSION).zip" 
+	rm -rf "$(NAME)-$(VERSION).zip"
 	zip -r "$(NAME)-$(VERSION).zip" * -x @.packignore
 
 publish:
@@ -22,10 +26,8 @@ publish:
 tag:
 	git tag "v$(VERSION)"
 
-node.tar.gz: 
-	wget "https://github.com/joyent/node/archive/master.tar.gz" \
-		--output-document node.tar.gz \
-		--continue
+node.tar.gz:
+	wget -c "https://github.com/joyent/node/archive/master.tar.gz" -O node.tar.gz
 
 list-core-modules: node.tar.gz
 	tar tf node.tar.gz |\
@@ -33,4 +35,6 @@ list-core-modules: node.tar.gz
 	xargs -n1 basename -s .js |\
 	{ cat; echo node; } | sort
 	
-.PHONY: love test autotest pack publish tag
+.PHONY: love
+.PHONY: spec autospec
+.PHONY: pack publish tag
