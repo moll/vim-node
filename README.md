@@ -47,7 +47,7 @@ wget https://github.com/moll/vim-node/archive/master.tar.gz -O- | tar -xf- --str
 
 Then prepend that directory to Vim's `&runtimepath` (or use [Pathogen](https://github.com/tpope/vim-pathogen)):
 ```
-set runtimepath^=~/.vim/bundle/node
+:set runtimepath^=~/.vim/bundle/node
 ```
 
 ### Vundle
