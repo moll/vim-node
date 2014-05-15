@@ -50,6 +50,11 @@ Then prepend that directory to Vim's `&runtimepath` (or use [Pathogen](https://g
 set runtimepath^=~/.vim/bundle/node
 ```
 
+Using [Vundle](https://github.com/gmarik/Vundle.vim) (while running vim):
+```
+:BundleInstall moll/vim-node
+```
+
 
 Using
 -----
