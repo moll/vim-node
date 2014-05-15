@@ -3,25 +3,24 @@ let node#filetypes = ["javascript", "json"]
 
 function! node#initialize(root)
 	let b:node_root = a:root
-	call s:initializeCommands()
 	if index(g:node#filetypes, &ft) > -1 | call s:initializeJavaScript() | en
 	silent doautocmd User Node
 endfunction
 
-function! s:initializeCommands()
+function! node#initializeCommands()
 	command! -bar -bang -nargs=1 -buffer -complete=customlist,s:complete Nedit
 		\ exe s:nedit(<q-args>, bufname("%"), "edit<bang>")
 	command! -bar -bang -nargs=1 -buffer -complete=customlist,s:complete Nopen
 		\ exe s:nopen(<q-args>, bufname("%"), "edit<bang>")
 
-	nnoremap <buffer><silent> <Plug>NodeGotoFile
-		\ :call <SID>edit(expand("<cfile>"), bufname("%"))<CR>
-	nnoremap <buffer><silent> <Plug>NodeSplitGotoFile
-		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "split")<CR>
-	nnoremap <buffer><silent> <Plug>NodeVSplitGotoFile
-		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "vsplit")<CR>
-	nnoremap <buffer><silent> <Plug>NodeTabGotoFile
-		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "tab split")<CR>
+	command! -nargs=0 -complete=customlist,s:complete NodeGotoFile
+		\ :call <SID>edit(expand("<cfile>"), bufname("%"))
+	command! -nargs=0 -complete=customlist,s:complete NodeSplitGotoFile
+		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "split")
+	command! -nargs=0 -complete=customlist,s:complete NodeVSplitGotoFile
+		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "vsplit")
+	command! -nargs=0 -complete=customlist,s:complete NodeTabGotoFile
+		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "tab split")
 endfunction
 
 function! s:initializeJavaScript()
@@ -29,15 +28,6 @@ function! s:initializeJavaScript()
 	let &l:suffixesadd .= "," . join(g:node#suffixesadd, ",")
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
 	let &l:includeexpr = "node#lib#find(v:fname, bufname('%'))"
-
-	if !hasmapto("<Plug>NodeGotoFile")
-		" Split gotofiles don't take a count for the new window's width, but for
-		" opening the nth file. Though Node.vim doesn't support counts atm.
-		nmap <buffer> gf <Plug>NodeGotoFile
-		nmap <buffer> <C-w>f <Plug>NodeSplitGotoFile
-		nmap <buffer> <C-w><C-f> <Plug>NodeSplitGotoFile
-		nmap <buffer> <C-w>gf <Plug>NodeTabGotoFile
-	endif
 endfunction
 
 function! s:edit(name, from, ...)
@@ -53,10 +43,10 @@ function! s:edit(name, from, ...)
 	end
 
 	if empty(path)
-		return s:error("E447: Can't find file \"" . a:name . "\" in path")
+		normal gf
+  else
+		exe command . " " . fnameescape(path)
 	endif
-
-	exe command . " " . fnameescape(path)
 endfunction
 
 function! s:nedit(name, from, ...)
