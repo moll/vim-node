@@ -1,11 +1,26 @@
-let node#suffixesadd = [".js", ".json"]
-let node#filetypes = ["javascript", "json"]
+if !exists('g:node#suffixesadd')
+	let g:node#suffixesadd = [".js", ".json"]
+endif
+if !exists('g:node#filetypes')
+	let g:node#filetypes = ["javascript", "json"]
+endif
+if !exists('g:node#enable_gf_user')
+	let g:node#enable_gf_user = 0
+endif
 
 function! node#initialize(root)
 	let b:node_root = a:root
 	call s:initializeCommands()
 	if index(g:node#filetypes, &ft) > -1 | call s:initializeJavaScript() | en
 	silent doautocmd User Node
+endfunction
+
+function! node#gf_find()
+	let path = s:path(expand('<cfile>'), bufname('%'))
+	if empty(path)
+		return 0
+	endif
+	return path
 endfunction
 
 function! s:initializeCommands()
@@ -30,7 +45,7 @@ function! s:initializeJavaScript()
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
 	let &l:includeexpr = "node#lib#find(v:fname, bufname('%'))"
 
-	if !hasmapto("<Plug>NodeGotoFile")
+	if !g:node#enable_gf_user && !hasmapto("<Plug>NodeGotoFile")
 		" Split gotofiles don't take a count for the new window's width, but for
 		" opening the nth file. Though Node.vim doesn't support counts atm.
 		nmap <buffer> gf <Plug>NodeGotoFile
@@ -42,15 +57,8 @@ endfunction
 
 function! s:edit(name, from, ...)
 	if empty(a:name) | return | endif
-	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
 	let command = a:0 == 1 ? a:1 : "edit"
-
-	" If just a plain filename with no directory part, check if it exists:
-	if a:name !~# '^\v(/|\./|\.\./)' && filereadable(dir . "/" . a:name)
-		let path = dir . "/" . a:name
-	else
-		let path = node#lib#find(a:name, dir)
-	end
+	let path = s:path(a:name, a:from)
 
 	if empty(path)
 		return s:error("E447: Can't find file \"" . a:name . "\" in path")
@@ -85,6 +93,21 @@ function! s:complete(arg, cmd, cursor)
 	return filter(matches, filter)
 endfunction
 
+function! s:path(name, from)
+	if empty(a:name) | return | endif
+	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
+
+	" If just a plain filename with no directory part, check if it exists:
+	if a:name !~# '^\v(/|\./|\.\./)' && filereadable(dir . "/" . a:name)
+		let path = dir . "/" . a:name
+	else
+		let path = node#lib#find(a:name, dir)
+	end
+
+	return path
+endfunction
+
+
 function! s:dirname(path)
 	let dirname = fnamemodify(a:path, ":h")
 	if dirname == "." | return "" | endif
@@ -102,3 +125,8 @@ function! s:error(msg)
 	echohl NONE
 	let v:errmsg = a:msg
 endfunction
+
+if g:node#enable_gf_user
+	" initialize gf-user
+	call gf#user#extend('node#gf_find', 1000)
+endif
