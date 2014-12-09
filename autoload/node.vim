@@ -15,7 +15,7 @@ function! node#initialize(root)
 	silent doautocmd User Node
 endfunction
 
-function! node#gf#find()
+function! node#gf_find()
 	let path = s:path(expand('<cfile>'), bufname('%'))
 	if empty(path)
 		return 0
@@ -128,5 +128,5 @@ endfunction
 
 if g:node#enable_gf_user
 	" initialize gf-user
-	call gf#user#extend('node#gf#find', 1000)
+	call gf#user#extend('node#gf_find', 1000)
 endif
