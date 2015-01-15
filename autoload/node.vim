@@ -1,6 +1,11 @@
 let node#suffixesadd = [".js", ".json"]
 let node#filetypes = ["javascript", "json"]
 
+if exists("g:node#includeCoffee") && g:node#includeCoffee == 1
+  call add(node#suffixesadd, ".coffee")
+  call add(node#filetypes, "coffee")
+endif
+
 function! node#initialize(root)
 	let b:node_root = a:root
 	call s:initializeCommands()

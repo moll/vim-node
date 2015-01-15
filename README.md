@@ -2,7 +2,7 @@ Node.vim
 ========
 [![Build status](https://travis-ci.org/moll/vim-node.png?branch=master)](https://travis-ci.org/moll/vim-node)
 
-Tools to make Vim superb for developing with Node.js.  
+Tools to make Vim superb for developing with Node.js.
 It's the Node equivalent of [Rails.vim (vimscript #1567)](https://github.com/tpope/vim-rails) and [Rake.vim (vimscript #3669)](https://github.com/tpope/vim-rake).
 
 This is just the first release to get the nodes rolling. If you've collected great helpers and shortcuts that help you work with Node, please share them via [email](mailto:andri@dot.ee), [Twitter](https://twitter.com/theml) or [GitHub issues](https://github.com/moll/vim-node/issues) so we could incorporate them here, too! Thanks!
@@ -84,6 +84,14 @@ autocmd User Node
   \ endif
 ```
 
+Configuration
+-------------
+For rudimentary support in CoffeeScript files, add the following to your `.vimrc`:
+
+```
+let g:node#includeCoffee = 1
+```
+
 License
 -------
 Node.vim is released under a *Lesser GNU Affero General Public License*, which in summary means:
@@ -98,7 +106,7 @@ For more convoluted language, see the `LICENSE` file.
 
 About
 -----
-**[Andri Möll](http://themoll.com)** authored this in SublemacslipseMate++.  
-[Monday Calendar](https://mondayapp.com) supported the engineering work.  
+**[Andri Möll](http://themoll.com)** authored this in SublemacslipseMate++.
+[Monday Calendar](https://mondayapp.com) supported the engineering work.
 
 If you find Node.vim needs improving or you've got a question, please don't hesitate to email me anytime at [andri@dot.ee](mailto:andri@dot.ee), tweet at [@theml](https://twitter.com/theml) or [create an issue online](https://github.com/moll/vim-node/issues).
