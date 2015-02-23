@@ -51,6 +51,39 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "README")
     end
 
+    it "must find a ES file" do
+      touch File.join(@dir, "index.js"), "var myvar = require('./example');"
+      touch File.join(@dir, "example.es"), %(// Example ES file)
+
+      $vim.edit File.join(@dir, "index.js")
+
+      $vim.feedkeys "$hhhgf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "example.es")
+    end
+
+    it "must find a ES6 file" do
+      touch File.join(@dir, "index.js"), "var myvar = require('./example');"
+      touch File.join(@dir, "example.es6"), %(// Example ES6 file)
+
+      $vim.edit File.join(@dir, "index.js")
+
+      $vim.feedkeys "$hhhgf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "example.es6")
+    end
+
+    it "must find a JSX file" do
+      touch File.join(@dir, "index.js"), "var myvar = require('./example');"
+      touch File.join(@dir, "example.jsx"), %(// Example JSX file)
+
+      $vim.edit File.join(@dir, "index.js")
+
+      $vim.feedkeys "$hhhgf"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "example.jsx")
+    end
+
     it "must edit ./README.txt relative to file" do
       touch File.join(@dir, "foo", "index.js"), %(// Please read ./README.txt)
       touch File.join(@dir, "foo", "README.txt")
