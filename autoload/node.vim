@@ -1,4 +1,4 @@
-let node#suffixesadd = [".js", ".json"]
+let node#suffixesadd = [".js", ".json", ".es6", ".es", ".jsx"]
 let node#filetypes = ["javascript", "json"]
 
 function! node#initialize(root)
