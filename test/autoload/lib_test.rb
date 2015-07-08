@@ -230,6 +230,13 @@ describe "Lib" do
       find("foo").must_equal File.join(mod, "lib/index.js")
     end
 
+    it "must return node_modules/@scope/foo/index.js given @scope/foo" do
+      index = File.join(@dir, "node_modules", "@scope", "foo", "index.js")
+      touch index
+      $vim.edit File.join(@dir, "index.js")
+      find("@scope/foo").must_equal index
+    end
+
     it "must return empty when looking for nothing" do
       $vim.edit File.join(@dir, "index.js")
       $vim.echo(%(empty(node#lib#find("", expand("%"))))).must_equal "1"

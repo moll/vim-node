@@ -1,3 +1,6 @@
+## Unreleased
+- Fixes `gf` on scoped modules (`require("@scope/example")`).
+
 ## 0.8.1 (Apr 15, 2014)
 - Updates the URL from which Node.vim downloads Node core module source files.  
   Uses <http://rawgit.com> which used to be named <http://rawgithub.com>.  

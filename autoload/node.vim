@@ -25,10 +25,14 @@ function! s:initializeCommands()
 endfunction
 
 function! s:initializeJavaScript()
-	setl path-=/usr/include
+	setlocal path-=/usr/include
 	let &l:suffixesadd .= "," . join(g:node#suffixesadd, ",")
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
 	let &l:includeexpr = "node#lib#find(v:fname, bufname('%'))"
+
+	" @ is used for scopes, but isn't a default filename character on
+	" non-Windows sytems.
+	setlocal isfname+=@-@
 
 	if !hasmapto("<Plug>NodeGotoFile")
 		" Split gotofiles don't take a count for the new window's width, but for

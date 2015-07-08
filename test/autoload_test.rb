@@ -126,9 +126,19 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "index.js")
     end
 
-    it "must open ./node_modules/foo/index.js given foo" do
+    it "must edit ./node_modules/foo/index.js given foo" do
       touch File.join(@dir, "index.js"), %(require("foo"))
       index = File.join(@dir, "node_modules", "foo", "index.js")
+      touch index
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "$hhgf"
+      $vim.echo(%(bufname("%"))).must_equal index
+    end
+
+    it "must edit ./node_modules/@scope/foo/index.js given @scope/foo" do
+      touch File.join(@dir, "index.js"), %(require("@scope/foo"))
+      index = File.join(@dir, "node_modules", "@scope", "foo", "index.js")
       touch index
 
       $vim.edit File.join(@dir, "index.js")
