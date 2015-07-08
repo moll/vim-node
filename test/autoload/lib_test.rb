@@ -26,82 +26,82 @@ describe "Lib" do
     end
 
     it "must return ./README before ./README.js" do
-      touch File.join(@dir, "README")
+      target = touch File.join(@dir, "README")
       touch File.join(@dir, "README.js")
 
       $vim.edit File.join(@dir, "index.js")
-      find("./README").must_equal File.join(@dir, "README")
+      find("./README").must_equal target
     end
 
     it "must return ./README.txt relative to file" do
-      touch File.join(@dir, "lib", "README.txt")
+      target = touch File.join(@dir, "lib", "README.txt")
       $vim.edit File.join(@dir, "lib", "index.js")
-      find("./README.txt").must_equal File.join(@dir, "lib", "README.txt")
+      find("./README.txt").must_equal target
     end
 
     it "must return ../README.txt" do
-      touch File.join(@dir, "README.txt")
+      target = touch File.join(@dir, "README.txt")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "index.js")
-      find("../README.txt").must_equal File.join(@dir, "README.txt")
+      find("../README.txt").must_equal target
     end
 
     it "must return /.../README.txt" do
-      touch File.join(@dir, "README.txt")
+      target = touch File.join(@dir, "README.txt")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "index.js")
-      find("#@dir/README.txt").must_equal File.join(@dir, "README.txt")
+      find("#@dir/README.txt").must_equal target
     end
 
     it "must return ./other.js given ./other" do
-      touch File.join(@dir, "other.js")
+      target = touch File.join(@dir, "other.js")
       $vim.edit File.join(@dir, "index.js")
-      find("./other").must_equal File.join(@dir, "other.js")
+      find("./other").must_equal target
     end
 
     it "must return ./other.js given ./other relative to file" do
-      touch File.join(@dir, "lib", "other.js")
+      target = touch File.join(@dir, "lib", "other.js")
       $vim.edit File.join(@dir, "lib", "index.js")
-      find("./other").must_equal File.join(@dir, "lib", "other.js")
+      find("./other").must_equal target
     end
 
     it "must return ./other.js before ./other/index.js given ./other" do
-      touch File.join(@dir, "other.js")
+      target = touch File.join(@dir, "other.js")
       touch File.join(@dir, "other", "index.js")
       $vim.edit File.join(@dir, "index.js")
-      find("./other").must_equal File.join(@dir, "other.js")
+      find("./other").must_equal target
     end
 
     it "must return ../other.js given ../other" do
-      touch File.join(@dir, "other.js")
+      target = touch File.join(@dir, "other.js")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "index.js")
-      find("../other").must_equal File.join(@dir, "other.js")
+      find("../other").must_equal target
     end
 
     it "must return /.../other.js given /.../other" do
-      touch File.join(@dir, "other.js")
+      target = touch File.join(@dir, "other.js")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "index.js")
-      find("#@dir/other").must_equal File.join(@dir, "other.js")
+      find("#@dir/other").must_equal target
     end
 
     it "must return ./package.json given ./package" do
-      touch File.join(@dir, "package.json")
+      target = touch File.join(@dir, "package.json")
       $vim.edit File.join(@dir, "index.js")
-      find("./package").must_equal File.join(@dir, "package.json")
+      find("./package").must_equal target
     end
 
     it "must return ./index.js given ." do
-      touch File.join(@dir, "index.js")
+      target = touch File.join(@dir, "index.js")
       $vim.edit File.join(@dir, "other.js")
-      find(".").must_equal File.join(@dir, "index.js")
+      find(".").must_equal target
     end
 
     it "must return ./index.js given ./" do
-      touch File.join(@dir, "index.js")
+      target = touch File.join(@dir, "index.js")
       $vim.edit File.join(@dir, "other.js")
-      find("./").must_equal File.join(@dir, "index.js")
+      find("./").must_equal target
     end
 
     it "must not find ./index/index.js given ./" do
@@ -117,67 +117,67 @@ describe "Lib" do
     end
 
     it "must return ../index.js given .." do
-      touch File.join(@dir, "index.js")
+      target = touch File.join(@dir, "index.js")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "other.js")
-      find("..").must_equal File.join(@dir, "index.js")
+      find("..").must_equal target
     end
 
     it "must return ../index.js given ../" do
-      touch File.join(@dir, "index.js")
+      target = touch File.join(@dir, "index.js")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "other.js")
-      find("../").must_equal File.join(@dir, "index.js")
+      find("../").must_equal target
     end
 
     it "must return /.../index.js given /..." do
-      touch File.join(@dir, "index.js")
+      target = touch File.join(@dir, "index.js")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "index.js")
-      find("#@dir").must_equal File.join(@dir, "index.js")
+      find("#@dir").must_equal target
     end
 
     it "must return /.../index.js given /.../" do
-      touch File.join(@dir, "index.js")
+      target = touch File.join(@dir, "index.js")
       Dir.mkdir File.join(@dir, "lib")
       $vim.edit File.join(@dir, "lib", "index.js")
-      find("#@dir/").must_equal File.join(@dir, "index.js")
+      find("#@dir/").must_equal target
     end
 
     it "must return ./lib/index.js given ./lib" do
-      touch File.join(@dir, "lib", "index.js")
+      target = touch File.join(@dir, "lib", "index.js")
       $vim.edit File.join(@dir, "index.js")
-      find("./lib").must_equal File.join(@dir, "lib", "index.js")
+      find("./lib").must_equal target
     end
 
     it "must return ./lib/other.js given ./lib with main" do
-      touch File.join(@dir, "lib", "other.js")
+      target = touch File.join(@dir, "lib", "other.js")
       touch File.join(@dir, "lib", "package.json"), JSON.dump(:main => "other")
       $vim.edit File.join(@dir, "index.js")
-      find("./lib").must_equal File.join(@dir, "lib", "other.js")
+      find("./lib").must_equal target
     end
 
     it "must return ./lib/index.js given ./lib with empty main" do
-      touch File.join(@dir, "lib", "index.js")
+      target = touch File.join(@dir, "lib", "index.js")
       touch File.join(@dir, "lib", "package.json"), JSON.dump(:main => "")
       $vim.edit File.join(@dir, "index.js")
-      find("./lib").must_equal File.join(@dir, "lib", "index.js")
+      find("./lib").must_equal target
     end
 
     it "must return ./lib/index.js given ./lib with non-existent main" do
-      touch File.join(@dir, "lib", "index.js")
+      target = touch File.join(@dir, "lib", "index.js")
       touch File.join(@dir, "lib", "package.json"), JSON.dump(:main => "new")
       $vim.edit File.join(@dir, "index.js")
-      find("./lib").must_equal File.join(@dir, "lib", "index.js")
+      find("./lib").must_equal target
     end
 
     it "must return ./other.js before ./other/index.js given . with main" do
       touch File.join(@dir, "package.json"), JSON.dump(:main => "other")
-      touch File.join(@dir, "other.js")
+      target = touch File.join(@dir, "other.js")
       touch File.join(@dir, "other", "index.js")
 
       $vim.edit File.join(@dir, "index.js")
-      find(".").must_equal File.join(@dir, "other.js")
+      find(".").must_equal target
     end
 
     it "must return node_modules/foo/index.js given foo" do
@@ -205,36 +205,36 @@ describe "Lib" do
     it "must return node_modules/foo/other.js given foo with main" do
       mod = File.join(@dir, "node_modules", "foo")
       touch File.join(mod, "package.json"), JSON.dump(:main => "./other.js")
-      touch File.join(mod, "other.js")
+      target = touch File.join(mod, "other.js")
 
       $vim.edit File.join(@dir, "index.js")
-      find("foo").must_equal File.join(mod, "other.js")
+      find("foo").must_equal target
     end
 
     # When package.json refers to a directory.
     it "must return node_modules/foo/lib/index.js given foo with main as ./lib" do
       mod = File.join(@dir, "node_modules", "foo")
       touch File.join(mod, "package.json"), JSON.dump(:main => "./lib")
-      touch File.join(mod, "lib/index.js")
+      target = touch File.join(mod, "lib/index.js")
 
       $vim.edit File.join(@dir, "index.js")
-      find("foo").must_equal File.join(mod, "lib/index.js")
+      find("foo").must_equal target
     end
 
     it "must return node_modules/foo/lib/index.js given foo with main as lib" do
       mod = File.join(@dir, "node_modules", "foo")
       touch File.join(mod, "package.json"), JSON.dump(:main => "lib")
-      touch File.join(mod, "lib/index.js")
+      target = touch File.join(mod, "lib/index.js")
 
       $vim.edit File.join(@dir, "index.js")
-      find("foo").must_equal File.join(mod, "lib/index.js")
+      find("foo").must_equal target
     end
 
     it "must return node_modules/@scope/foo/index.js given @scope/foo" do
-      index = File.join(@dir, "node_modules", "@scope", "foo", "index.js")
-      touch index
+      target = File.join(@dir, "node_modules", "@scope", "foo", "index.js")
+      touch target
       $vim.edit File.join(@dir, "index.js")
-      find("@scope/foo").must_equal index
+      find("@scope/foo").must_equal target
     end
 
     it "must return empty when looking for nothing" do
