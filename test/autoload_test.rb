@@ -26,7 +26,7 @@ describe "Autoloaded" do
       $vim.echo(%(maparg("<Plug>NodeGotoFile", "n"))).wont_equal ""
     end
 
-    it "must not be available in non-JavaScript files" do
+    it "must not be mapped in non-JavaScript files" do
       $vim.edit File.join(@dir, "README")
       $vim.echo(%(hasmapto("<Plug>NodeGotoFile"))).must_equal "0"
     end
@@ -71,7 +71,7 @@ describe "Autoloaded" do
       bufname.must_equal File.join(@dir, "lib", "README.txt")
     end
 
-    it "must open ./other.js relative to file" do
+    it "must edit ./other.js relative to file" do
       touch File.join(@dir, "foo", "index.js"), %(require("./other"))
       touch File.join(@dir, "foo", "other.js")
 
