@@ -1,14 +1,8 @@
 let node#suffixesadd = [".js", ".json"]
-let node#filetypes = ["javascript", "json"]
 
 function! node#initialize(root)
 	let b:node_root = a:root
-	call s:initializeCommands()
-	if index(g:node#filetypes, &ft) > -1 | call s:initializeJavaScript() | en
-	silent doautocmd User Node
-endfunction
 
-function! s:initializeCommands()
 	command! -bar -bang -nargs=1 -buffer -complete=customlist,s:complete Nedit
 		\ exe s:nedit(<q-args>, bufname("%"), "edit<bang>")
 	command! -bar -bang -nargs=1 -buffer -complete=customlist,s:complete Nopen
@@ -22,9 +16,11 @@ function! s:initializeCommands()
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "vsplit")<CR>
 	nnoremap <buffer><silent> <Plug>NodeTabGotoFile
 		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "tab split")<CR>
+
+	silent doautocmd User Node
 endfunction
 
-function! s:initializeJavaScript()
+function! node#javascript()
 	setlocal path-=/usr/include
 	let &l:suffixesadd .= "," . join(g:node#suffixesadd, ",")
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'

@@ -1,6 +1,7 @@
 set nocompatible
 set noswapfile
 set nobackup
+set hidden
 
 set runtimepath-=~/.vim
 set runtimepath-=~/.vim/after

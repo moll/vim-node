@@ -1,5 +1,9 @@
 ## Unreleased
 - Fixes `gf` on scoped modules (`require("@scope/example")`).
+- Initializes Node.vim `gf` and other mappings when the `'filetype'` is set,
+  rather than when reading a file.  
+  This allows you to manually set the filetype to JavaScript after opening
+  a file, for example, and still get Node.vim's mappings.
 
 ## 0.8.1 (Apr 15, 2014)
 - Updates the URL from which Node.vim downloads Node core module source files.  

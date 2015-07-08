@@ -35,8 +35,14 @@ end
 
 def touch(path, contents = nil)
   FileUtils.mkpath File.dirname(path)
-  return FileUtils.touch(path) if contents.nil? || contents.empty?
-  File.open(path, "w") {|f| f.write contents }
+
+  if contents.nil? || contents.empty?
+    FileUtils.touch(path)
+  else
+    File.open(path, "w") {|f| f.write contents }
+  end
+
+  path
 end
 
 CORE_MODULES = %w[_debugger _http_agent _http_client _http_common
