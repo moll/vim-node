@@ -1,19 +1,19 @@
 if exists("g:loaded_node") || &cp || v:version < 700 | finish | endif
 let g:loaded_node = 1
 
-function! s:detect(path)
+function! s:detect(dir)
 	if exists("b:node_root") | return | endif
-	let path = a:path
+	let dir = a:dir
 
 	while 1
 		let is_node = 0
-		let is_node = is_node || filereadable(path . "/package.json")
-		let is_node = is_node || isdirectory(path . "/node_modules")
-		if is_node | return node#initialize(path) | endif
+		let is_node = is_node || filereadable(dir . "/package.json")
+		let is_node = is_node || isdirectory(dir . "/node_modules")
+		if is_node | return node#initialize(dir) | endif
 
-		let parent = fnamemodify(path, ":h")
-		if parent == path | return | endif
-		let path = parent
+		let parent = fnamemodify(dir, ":h")
+		if parent == dir | return | endif
+		let dir = parent
 	endwhile
 endfunction
 
