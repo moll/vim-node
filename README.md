@@ -84,6 +84,7 @@ autocmd User Node
   \ endif
 ```
 
+
 License
 -------
 Node.vim is released under a *Lesser GNU Affero General Public License*, which in summary means:
