@@ -214,6 +214,19 @@ describe "Autoloaded" do
       $vim.echo(%(bufname("%"))).must_equal target
     end
 
+    it "must find when filetype set to JSX after open" do
+      target = touch File.join(@dir, "node_modules", "foo", "index.js")
+
+      touch File.join(@dir, "index.react"), %(require("foo"))
+      $vim.edit File.join(@dir, "index.react")
+      $vim.echo("&filetype").must_equal ""
+      $vim.command("setfiletype jsx")
+      $vim.echo("&filetype").must_equal "jsx"
+
+      $vim.feedkeys "$hhgf"
+      $vim.echo(%(bufname("%"))).must_equal target
+    end
+
     it "must find when filetype set to JavaScript and Foo after open" do
       target = touch File.join(@dir, "node_modules", "foo", "index.js")
 

@@ -4,6 +4,7 @@
   rather than when reading a file.  
   This allows you to manually set the filetype to JavaScript after opening
   a file, for example, and still get Node.vim's mappings.
+- Initializes Node.vim mappings for JSX (those with the `jsx` filetype) files.
 
 ## 0.8.1 (Apr 15, 2014)
 - Updates the URL from which Node.vim downloads Node core module source files.  

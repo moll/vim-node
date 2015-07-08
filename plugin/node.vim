@@ -1,7 +1,7 @@
 if exists("g:loaded_node") || &cp || v:version < 700 | finish | endif
 let g:loaded_node = 1
 
-let s:filetypes = ["javascript", "json"]
+let s:filetypes = ["javascript", "json", "jsx"]
 if exists("g:node_filetypes") | let s:filetypes = g:node_filetypes | endif
 
 function! s:detect(dir)

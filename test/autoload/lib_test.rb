@@ -59,6 +59,12 @@ describe "Lib" do
       find("./other").must_equal target
     end
 
+    it "must return ./other.jsx given ./other" do
+      target = touch File.join(@dir, "other.jsx")
+      $vim.edit File.join(@dir, "index.js")
+      find("./other").must_equal target
+    end
+
     it "must return ./other.js given ./other relative to file" do
       target = touch File.join(@dir, "lib", "other.js")
       $vim.edit File.join(@dir, "lib", "index.js")

@@ -1,4 +1,4 @@
-let node#suffixesadd = [".js", ".json"]
+let node#suffixesadd = [".js", ".json", ".jsx"]
 
 function! node#initialize(root)
 	let b:node_root = a:root
@@ -21,6 +21,10 @@ function! node#initialize(root)
 endfunction
 
 function! node#javascript()
+	" This might be called multiple times if multiple filetypes match.
+	if exists("b:node_javascript") && b:node_javascript | return | endif
+	let b:node_javascript = 1
+
 	setlocal path-=/usr/include
 	let &l:suffixesadd .= "," . join(g:node#suffixesadd, ",")
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
