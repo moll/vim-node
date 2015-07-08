@@ -1,4 +1,4 @@
-let node#suffixesadd = [".js", ".json", ".jsx"]
+let node#suffixesadd = [".js", ".json", ".es", ".jsx"]
 
 function! node#initialize(root)
 	let b:node_root = a:root
