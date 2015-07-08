@@ -34,7 +34,7 @@ list-core-modules: node.tar.gz
 	egrep "^node[^/]*/lib/.+" |\
 	xargs -n1 basename -s .js |\
 	{ cat; echo node; } | sort
-	
+
 .PHONY: love
 .PHONY: spec autospec
 .PHONY: pack publish tag

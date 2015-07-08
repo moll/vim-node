@@ -72,18 +72,18 @@ describe "Autoloaded" do
     end
 
     it "must open ./other.js relative to file" do
-      touch File.join(@dir, "foo", "index.js"), %(require("./other")) 
+      touch File.join(@dir, "foo", "index.js"), %(require("./other"))
       touch File.join(@dir, "foo", "other.js")
- 
+
       $vim.edit File.join(@dir, "foo", "index.js")
       $vim.feedkeys "f.gf"
- 
+
       bufname = File.realpath($vim.echo(%(bufname("%"))))
       bufname.must_equal File.join(@dir, "foo", "other.js")
     end
 
     it "must edit ./index.js given ." do
-      touch File.join(@dir, "other.js"), %(require(".")) 
+      touch File.join(@dir, "other.js"), %(require("."))
       touch File.join(@dir, "index.js")
 
       $vim.edit File.join(@dir, "other.js")
@@ -94,7 +94,7 @@ describe "Autoloaded" do
     end
 
     it "must edit ./index.js given ./" do
-      touch File.join(@dir, "other.js"), %(require("./")) 
+      touch File.join(@dir, "other.js"), %(require("./"))
       touch File.join(@dir, "index.js")
 
       $vim.edit File.join(@dir, "other.js")
@@ -105,7 +105,7 @@ describe "Autoloaded" do
     end
 
     it "must edit ../index.js given .." do
-      touch File.join(@dir, "foo", "other.js"), %(require("..")) 
+      touch File.join(@dir, "foo", "other.js"), %(require(".."))
       touch File.join(@dir, "index.js")
 
       $vim.edit File.join(@dir, "foo", "other.js")
@@ -116,7 +116,7 @@ describe "Autoloaded" do
     end
 
     it "must edit ../index.js given ../" do
-      touch File.join(@dir, "foo", "other.js"), %(require("../")) 
+      touch File.join(@dir, "foo", "other.js"), %(require("../"))
       touch File.join(@dir, "index.js")
 
       $vim.edit File.join(@dir, "foo", "other.js")
@@ -127,10 +127,10 @@ describe "Autoloaded" do
     end
 
     it "must open ./node_modules/foo/index.js given foo" do
-      touch File.join(@dir, "index.js"), %(require("foo")) 
+      touch File.join(@dir, "index.js"), %(require("foo"))
       index = File.join(@dir, "node_modules", "foo", "index.js")
       touch index
- 
+
       $vim.edit File.join(@dir, "index.js")
       $vim.feedkeys "$hhgf"
       $vim.echo(%(bufname("%"))).must_equal index
@@ -176,7 +176,7 @@ describe "Autoloaded" do
 
   describe "Goto file with split" do
     it "must edit file in a new split" do
-      touch File.join(@dir, "index.js"), %(require("./other")) 
+      touch File.join(@dir, "index.js"), %(require("./other"))
       touch File.join(@dir, "other.js")
 
       $vim.edit File.join(@dir, "index.js")
@@ -190,7 +190,7 @@ describe "Autoloaded" do
 
   describe "Goto file with tab" do
     it "must edit file in a new tab" do
-      touch File.join(@dir, "index.js"), %(require("./other")) 
+      touch File.join(@dir, "index.js"), %(require("./other"))
       touch File.join(@dir, "other.js")
 
       $vim.edit File.join(@dir, "index.js")

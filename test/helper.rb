@@ -24,11 +24,11 @@ module WithTemporaryDirectory
     super
     # Mac has the temporary directory symlinked, so need File.realpath to
     # match the paths that Vim returns.
-    @dir = File.realpath(Dir.mktmpdir) 
+    @dir = File.realpath(Dir.mktmpdir)
   end
 
   def teardown
-    FileUtils.remove_entry_secure @dir 
+    FileUtils.remove_entry_secure @dir
     super
   end
 end
