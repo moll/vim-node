@@ -1,5 +1,7 @@
 Node.vim
 ========
+
+[![Join the chat at https://gitter.im/moll/vim-node](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/moll/vim-node?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build status](https://travis-ci.org/moll/vim-node.png?branch=master)](https://travis-ci.org/moll/vim-node)
 
 Tools to make Vim superb for developing with Node.js.  
