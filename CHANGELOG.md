@@ -7,6 +7,9 @@
 - Initializes Node.vim mappings for JSX (those with the `jsx` filetype) files.
 - Adds `.es` to detected suffixes, so you can `gf` over `./foo` to open
   `./foo.es`.
+- Updates URLs to use <https://github.com/nodejs/node> instead of the previous
+  Joyent repo.  
+  Thanks, [Jacky Alciné](https://jacky.wtf), for the help!
 
 ## 0.8.1 (Apr 15, 2014)
 - Updates the URL from which Node.vim downloads Node core module source files.  
