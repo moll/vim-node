@@ -3,7 +3,7 @@ let s:RELPATH = '\v^\.\.?(/|$)'
 let s:MODULE = '\v^(/|\.\.?(/|$))@!'
 
 " Damn Netrw can't handle HTTPS at all. It's 2013! Insecure bastard!
-let s:CORE_URL_PREFIX = "http://rawgit.com/joyent/node"
+let s:CORE_URL_PREFIX = "http://rawgit.com/nodejs/node"
 let s:CORE_MODULES = ["_debugger", "_http_agent", "_http_client",
 	\ "_http_common", "_http_incoming", "_http_outgoing", "_http_server",
 	\ "_linklist", "_stream_duplex", "_stream_passthrough", "_stream_readable",
