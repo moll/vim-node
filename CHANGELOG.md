@@ -10,6 +10,8 @@
 - Updates URLs to use <https://github.com/nodejs/node> instead of the previous
   Joyent repo.  
   Thanks, [Jacky Alciné](https://jacky.wtf), for the help!
+- Resolves symlinks in paths before editing a file.  
+  Shows correct paths when using the relative symlink trick in `node_modules` (`ln -s .. node_modules/root`) and using `gf` on `require("root/lib/foo")`.
 
 ## 0.8.1 (Apr 15, 2014)
 - Updates the URL from which Node.vim downloads Node core module source files.  

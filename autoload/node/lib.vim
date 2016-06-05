@@ -22,7 +22,8 @@ function! node#lib#find(name, from)
 		return s:CORE_URL_PREFIX ."/". l:version ."/". l:dir ."/". a:name .".js"
 	endif
 
-	return s:resolve(s:absolutize(a:name, a:from))
+	let l:path = s:resolve(s:absolutize(a:name, a:from))
+	if !empty(path) | return resolve(path) | endif
 endfunction
 
 function! node#lib#version()

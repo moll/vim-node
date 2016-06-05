@@ -145,6 +145,17 @@ describe "Autoloaded" do
       $vim.echo(%(bufname("%"))).must_equal target
     end
 
+    it "must edit ./foo.js given root/foo with root as symlink" do
+      touch File.join(@dir, "index.js"), %(require("root/foo"))
+      target = touch File.join(@dir, "foo.js")
+      FileUtils.mkpath File.join(@dir, "node_modules")
+      File.symlink "..", File.join(@dir, "node_modules", "root")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "$hhgf"
+      $vim.echo(%(bufname("%"))).must_equal target
+    end
+
     it "must not show an error when searching for nothing" do
       touch File.join(@dir, "index.js"), %("")
 
