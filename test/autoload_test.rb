@@ -522,7 +522,7 @@ describe "Autoloaded" do
 
     it "must edit and lcd to module's root directory" do
       touch File.join(@dir, "node_modules", "foo", "package.json")
-      utils = touch File.join(@dir, "node_modules", "foo", "lib", "utils.js")
+      touch File.join(@dir, "node_modules", "foo", "lib", "utils.js")
 
       $vim.edit File.join(@dir, "README.txt")
       $vim.command("vsplit")
