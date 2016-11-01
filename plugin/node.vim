@@ -12,7 +12,7 @@ function! s:detect(dir)
 		let is_node = 0
 		let is_node = is_node || filereadable(dir . "/package.json")
 		let is_node = is_node || isdirectory(dir . "/node_modules")
-		if is_node | return node#initialize(dir) | endif
+		if is_node | call node#javascript() | return node#initialize(dir) | endif
 
 		let parent = fnamemodify(dir, ":h")
 		if parent == dir | return | endif
@@ -20,28 +20,8 @@ function! s:detect(dir)
 	endwhile
 endfunction
 
-function! s:permutate(ft)
-	" Don't know right now how to detect javascript.jsx and other permutations
-	" without precomputing them in advance. Please let me know if you do.
-	return [a:ft, a:ft . ".*", "*." . a:ft, "*." . a:ft . ".*"]
-endfunction
-
-function! s:flatten(list)
-	let values = []
-	for value in a:list
-		if type(value) == type([]) | call extend(values, value)
-		else | add(values, value)
-		endif
-	endfor
-	return values
-endfunction
-
 augroup Node
 	au!
-	au VimEnter * if empty(expand("<amatch>")) | call s:detect(getcwd()) | endif
-	au BufRead,BufNewFile * call s:detect(expand("<amatch>:p"))
-
-	let s:filetype_patterns = s:flatten(map(s:filetypes, "<SID>permutate(v:val)"))
-	let s:filetype_patterns_joined = join(s:filetype_patterns, ",")
-	execute "au FileType " s:filetype_patterns_joined " call node#javascript()"
+	let s:filetype_patterns_joined = join(s:filetypes, ",")
+	execute "au FileType " s:filetype_patterns_joined ' call <SID>detect(expand("\<afile>:p"))'
 augroup end
