@@ -29,7 +29,7 @@ function! node#javascript()
 
 	setlocal path-=/usr/include
 	let &l:suffixesadd .= "," . join(g:node#suffixesadd, ",")
-	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
+	let &l:include = '\<require(\(["'']\)\zs[^"'']\+\ze\1'
 	let &l:includeexpr = "node#lib#find(v:fname, bufname('%'))"
 
 	" @ is used for scopes, but isn't a default filename character on
