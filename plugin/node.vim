@@ -26,8 +26,8 @@ augroup Node
 
     let s:joined_filetypes = join(s:filetypes, ',')
     " Match multiple patterns of filetypes
-	execute "au FileType {" s:joined_filetypes "} call node#javascript()"
-	execute "au FileType *.{" s:joined_filetypes "} call node#javascript()"
-	execute "au FileType {" s:joined_filetypes "}.* call node#javascript()"
-	execute "au FileType *.{" s:joined_filetypes "}.* call node#javascript()"
+	execute "au FileType {" . s:joined_filetypes . "} call node#javascript()"
+	execute "au FileType *.{" . s:joined_filetypes . "} call node#javascript()"
+	execute "au FileType {" . s:joined_filetypes . "}.* call node#javascript()"
+	execute "au FileType *.{" . s:joined_filetypes . "}.* call node#javascript()"
 augroup end
