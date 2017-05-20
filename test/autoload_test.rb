@@ -253,6 +253,84 @@ describe "Autoloaded" do
       $vim.feedkeys "$hhgf"
       $vim.echo(%(bufname("%"))).must_equal target
     end
+
+    it "must edit ./other.android.js relative to file" do
+      touch File.join(@dir, "foo", "index.js"), %(require("./other"))
+      touch File.join(@dir, "foo", "other.android.js")
+
+      $vim.edit File.join(@dir, "foo", "index.js")
+      $vim.feedkeys "f.gf"
+
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "foo", "other.android.js")
+    end
+
+    it "must edit ./other.ios.js relative to file" do
+      touch File.join(@dir, "foo", "index.js"), %(require("./other"))
+      touch File.join(@dir, "foo", "other.ios.js")
+
+      $vim.edit File.join(@dir, "foo", "index.js")
+      $vim.feedkeys "f.gf"
+
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "foo", "other.ios.js")
+    end
+
+    it "must edit ./other.ios.js relative to file if both android and ios exist" do
+      touch File.join(@dir, "foo", "index.js"), %(require("./other"))
+      touch File.join(@dir, "foo", "other.ios.js")
+      touch File.join(@dir, "foo", "other.android.js")
+
+      $vim.edit File.join(@dir, "foo", "index.js")
+      $vim.feedkeys "f.gf"
+
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "foo", "other.ios.js")
+    end
+
+    it "must edit ./node_modules/foo/index.android.js given foo" do
+      touch File.join(@dir, "index.js"), %(require("foo"))
+      target = touch File.join(@dir, "node_modules", "foo", "index.android.js")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "$hhgf"
+      $vim.echo(%(bufname("%"))).must_equal target
+    end
+
+    it "must edit ./bar.js given packagejsonname/bar" do
+      touch File.join(@dir, "foo", "index.js"), %(require("packagejsonname/bar"))
+      touch File.join(@dir, "package.json"), %({ "name": "packagejsonname" })
+      touch File.join(@dir, "bar.js")
+
+      $vim.edit File.join(@dir, "foo", "index.js")
+      $vim.feedkeys "$hhgf"
+
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "bar.js")
+    end
+
+    it "must edit ./node_modules/foo/bar.js given foo/bar" do
+      touch File.join(@dir, "index.js"), %(require("foo/bar"))
+      touch File.join(@dir, "package.json"), %({ "name": "packagejsonname" })
+      target = touch File.join(@dir, "node_modules", "foo", "bar.js")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.feedkeys "$hhgf"
+      $vim.echo(%(bufname("%"))).must_equal target
+    end
+
+    it "must edit ./bar.js given packagejsonname/bar event if module exists" do
+      touch File.join(@dir, "foo", "index.js"), %(require("packagejsonname/bar"))
+      touch File.join(@dir, "package.json"), %({ "name": "packagejsonname" })
+      target = touch File.join(@dir, "node_modules", "packagejsonname", "bar.js")
+      touch File.join(@dir, "bar.js")
+
+      $vim.edit File.join(@dir, "foo", "index.js")
+      $vim.feedkeys "$hhgf"
+
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "bar.js")
+    end
   end
 
   describe "Goto file with split" do
