@@ -6,18 +6,18 @@ function! node#initialize(root)
 	let b:node_root = a:root
 
 	command! -bar -bang -nargs=1 -buffer -complete=customlist,s:complete Nedit
-		\ exe s:nedit(<q-args>, bufname("%"), "edit<bang>")
+		\ exe s:nedit(<q-args>, expand('%:p'), "edit<bang>")
 	command! -bar -bang -nargs=1 -buffer -complete=customlist,s:complete Nopen
-		\ exe s:nopen(<q-args>, bufname("%"), "edit<bang>")
+		\ exe s:nopen(<q-args>, expand('%:p'), "edit<bang>")
 
 	nnoremap <buffer><silent> <Plug>NodeGotoFile
-		\ :call <SID>edit(expand("<cfile>"), bufname("%"))<CR>
+		\ :call <SID>edit(expand("<cfile>"), expand('%:p'))<CR>
 	nnoremap <buffer><silent> <Plug>NodeSplitGotoFile
-		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "split")<CR>
+		\ :call <SID>edit(expand("<cfile>"), expand('%:p'), "split")<CR>
 	nnoremap <buffer><silent> <Plug>NodeVSplitGotoFile
-		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "vsplit")<CR>
+		\ :call <SID>edit(expand("<cfile>"), expand('%:p'), "vsplit")<CR>
 	nnoremap <buffer><silent> <Plug>NodeTabGotoFile
-		\ :call <SID>edit(expand("<cfile>"), bufname("%"), "tab split")<CR>
+		\ :call <SID>edit(expand("<cfile>"), expand('%:p'), "tab split")<CR>
 
 	silent doautocmd User Node
 endfunction
@@ -30,7 +30,7 @@ function! node#javascript()
 	setlocal path-=/usr/include
 	let &l:suffixesadd .= "," . join(g:node#suffixesadd, ",")
 	let &l:include = '\<require(\(["'']\)\zs[^\1]\+\ze\1'
-	let &l:includeexpr = "node#lib#find(v:fname, bufname('%'))"
+	let &l:includeexpr = "node#lib#find(v:fname, expand('%:p'))"
 
 	" @ is used for scopes, but isn't a default filename character on
 	" non-Windows sytems.
@@ -52,11 +52,7 @@ function! s:edit(name, from, ...)
 	let command = a:0 == 1 ? a:1 : "edit"
 
 	" If just a plain filename with no directory part, check if it exists:
-	if a:name !~# '^\v(/|\./|\.\./)' && filereadable(dir . "/" . a:name)
-		let path = dir . "/" . a:name
-	else
-		let path = node#lib#find(a:name, dir)
-	end
+	let path = node#lib#find(a:name, dir)
 
 	if empty(path)
 		return s:error("E447: Can't find file \"" . a:name . "\" in path")
