@@ -50,8 +50,6 @@ function! s:edit(name, from, ...)
 	if empty(a:name) | return | endif
 	let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
 	let command = a:0 == 1 ? a:1 : "edit"
-
-	" If just a plain filename with no directory part, check if it exists:
 	let path = node#lib#find(a:name, dir)
 
 	if empty(path)
