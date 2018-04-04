@@ -150,6 +150,11 @@ function! s:nodeModulePaths(start)
 		let dirs += [NODE_PATH]
 	endif
 
+	" Add support for configured NODE_PATH
+	if !empty(g:vim_node#node_path)
+		let dirs += g:vim_node#node_path
+	endif
+
 	return dirs
 endfunction
 
