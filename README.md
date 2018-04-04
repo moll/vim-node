@@ -84,6 +84,13 @@ autocmd User Node
   \ endif
 ```
 
+#### Want to resolve modules with a custom NODE_PATH?
+
+```vim
+let g:vim_node#node_path = [$HOME.'/project/src', '/absolute/path']
+```
+
+Or you can also start vim with the `NODE_PATH` environment variable set.
 
 License
 -------
