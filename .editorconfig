@@ -1,0 +1,11 @@
+root = true
+
+[Makefile]
+indent_style = tab
+
+[*.vim]
+indent_style = tab
+
+[*.rb]
+indent_style = space
+indent_size = 2
