@@ -156,6 +156,18 @@ describe "Autoloaded" do
       $vim.echo(%(bufname("%"))).must_equal target
     end
 
+    it "must relativize paths" do
+      touch File.join(@dir, "index.js"), %(require("root/foo"))
+      target = touch File.join(@dir, "foo.js")
+      FileUtils.mkpath File.join(@dir, "node_modules")
+      File.symlink "..", File.join(@dir, "node_modules", "root")
+
+      $vim.edit File.join(@dir, "index.js")
+      $vim.command %(:cd %:h)
+      $vim.feedkeys "$hhgf"
+      $vim.echo(%(bufname("%"))).must_equal File.basename(target)
+    end
+
     it "must not show an error when searching for nothing" do
       touch File.join(@dir, "index.js"), %("")
 

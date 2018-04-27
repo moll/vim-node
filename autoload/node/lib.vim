@@ -23,7 +23,7 @@ function! node#lib#find(name, from)
 	endif
 
 	let l:path = s:resolve(s:absolutize(a:name, a:from))
-	if !empty(path) | return resolve(path) | endif
+	if !empty(path) | return fnamemodify(resolve(path), ":.") | endif
 endfunction
 
 function! node#lib#version()

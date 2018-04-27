@@ -5,6 +5,8 @@ describe "Lib" do
   include WithTemporaryDirectory
 
   before do
+    # Some tests may change the working directory, so reset it to a known good.
+    $vim.command "cd #{Dir.getwd}"
     Dir.mkdir File.join(@dir, "node_modules")
   end
 
