@@ -84,6 +84,18 @@ autocmd User Node
   \ endif
 ```
 
+#### Viewing Node.js core modules
+Open Vim in the directory of a Node.js project and use `:Nedit` with the name of the core module:
+```vim
+:Nedit http
+```
+
+This downloads a single file from the Node.js repository for your Node version through <https://rawgit.com>. If you'd like to change the base URL, set `g:node_repository_url`:
+
+```vim
+let node_repository_url = "https://example.com/nodejs/node"
+```
+
 
 License
 -------

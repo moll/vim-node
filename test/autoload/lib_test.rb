@@ -264,7 +264,7 @@ describe "Lib" do
     it "must return URL for core module for current Node version" do
       set_node_version "0.13.37"
       $vim.edit File.join(@dir, "index.js")
-      url = "http://rawgit.com/nodejs/node/v0.13.37/lib/assert.js"
+      url = "https://rawgit.com/nodejs/node/v0.13.37/lib/assert.js"
       find("assert").must_equal url
     end
 
@@ -273,14 +273,14 @@ describe "Lib" do
       File.chmod 0755, File.join(@dir, "node")
       $vim.edit File.join(@dir, "index.js")
       $vim.command(%(let $PATH = "#@dir:" . $PATH))
-      url = "http://rawgit.com/nodejs/node/master/lib/assert.js"
+      url = "https://rawgit.com/nodejs/node/master/lib/assert.js"
       find("assert").must_equal url
     end
 
     it "must return URL for node.js for current Node version" do
       set_node_version "0.13.37"
       $vim.edit File.join(@dir, "index.js")
-      url = "http://rawgit.com/nodejs/node/v0.13.37/src/node.js"
+      url = "https://rawgit.com/nodejs/node/v0.13.37/src/node.js"
       find("node").must_equal url
     end
 
@@ -289,7 +289,7 @@ describe "Lib" do
       File.chmod 0755, File.join(@dir, "node")
       $vim.edit File.join(@dir, "index.js")
       $vim.command(%(let $PATH = "#@dir:" . $PATH))
-      url = "http://rawgit.com/nodejs/node/master/src/node.js"
+      url = "https://rawgit.com/nodejs/node/master/src/node.js"
       find("node").must_equal url
     end
   end

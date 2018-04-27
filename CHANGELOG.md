@@ -12,6 +12,12 @@
   Thanks, [Jacky Alciné](https://jacky.wtf), for the help!
 - Resolves symlinks in paths before editing a file.  
   Shows correct paths when using the relative symlink trick in `node_modules` (`ln -s .. node_modules/root`) and using `gf` on `require("root/lib/foo")`.
+- Uses the HTTPS variant of <https://rawgit.com> to download Node core module source files.  
+  This previously used HTTP because my Vim v7's Netrw didn't seem to handle HTTPS URLs. If that's still the case for you, set `g:node_repository_url`:
+
+  ```vim
+  let node_repository_url = "http://raw.githack.com/nodejs/node"
+  ```
 
 ## 0.8.1 (Apr 15, 2014)
 - Updates the URL from which Node.vim downloads Node core module source files.  
