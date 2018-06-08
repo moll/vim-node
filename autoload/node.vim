@@ -1,6 +1,6 @@
 " Vim by default sets the filetype to JavaScript for the following suffices.
 " And, yes, it has .jsx there.
-let node#suffixesadd = [".js", ".json", ".es", ".jsx"]
+let node#suffixesadd = [".js", ".json", ".es", ".jsx", ".ios.js", ".android.js", ".ios.jsx", ".android.jsx"]
 
 function! node#initialize(root)
 	let b:node_root = a:root

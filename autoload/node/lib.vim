@@ -35,11 +35,16 @@ function! node#lib#version()
 endfunction
 
 function! s:absolutize(name, from)
+	let PACKAGENAME = s:nameFromPackage(b:node_root . "/package.json")
 	if a:name =~# s:ABSPATH
 		return a:name
 	elseif a:name =~# s:RELPATH
 		let dir = isdirectory(a:from) ? a:from : fnamemodify(a:from, ":h")
 		return dir . "/" . a:name
+	elseif a:name =~# "^" . PACKAGENAME && !empty(PACKAGENAME)
+		let l:slashPos = match(a:name, "/")
+		let finalPath = a:name[l:slashPos :]
+		return b:node_root . finalPath
 	else
 		return b:node_root . "/node_modules/" . a:name
 	endif
@@ -88,11 +93,39 @@ function! s:mainFromPackage(path)
 	endfor
 endfunction
 
+function! s:nameFromPackage(path)
+	if !filereadable(a:path)
+		return
+	endif
+	for line in readfile(a:path)
+		if line !~# '"name"\s*:' | continue | endif
+		return matchstr(line, '"name"\s*:\s*"\zs[^"]\+\ze"')
+	endfor
+	return ""
+endfunction
+
 function! s:resolveSuffix(path)
 	for suffix in s:uniq([""] + g:node#suffixesadd + split(&l:suffixesadd, ","))
 		let path = a:path . suffix
 		if filereadable(path) | return path | endif
 	endfor
+endfunction
+
+function! s:resolveReactNativeGlobal(path)
+	" React-Native allow to use absolute path using the name of a package.json
+	" https://medium.com/@davidjwoody/how-to-use-absolute-paths-in-react-native-6b06ae3f65d1
+	" Here is implemented only with the main one
+	if filereadable(b:node_root . "/package.json")
+		let name = s:nameFromPackage(b:node_root . "/package.json")
+
+		let slashPos = match(a:path, "/")
+		let prefix = a:path[0: slashPos]
+		let finalPath = a:path[slashPos:]
+
+		if (prefix == name)
+			return s:resolve(b:node_root . finalPath)
+		endif
+	endif
 endfunction
 
 let s:GLOB_WILDIGNORE = 1
