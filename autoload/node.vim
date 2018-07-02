@@ -63,6 +63,12 @@ function! s:edit(name, from, ...)
 	endif
 
 	exe command . " " . fnameescape(path)
+
+	" Set to readonly if this file was downloaded
+	if path =~# '\v^https?://'
+		setlocal readonly
+		setlocal nomodifiable
+	endif
 endfunction
 
 function! s:nedit(name, from, ...)

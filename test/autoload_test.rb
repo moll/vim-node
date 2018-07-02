@@ -289,6 +289,8 @@ describe "Autoloaded" do
       bufname = File.realpath($vim.echo(%(bufname("%"))))
       bufname.must_equal File.join(@dir, "other.js")
       $vim.echo(%(winnr("$"))).must_equal "2"
+      $vim.echo(%(&readonly)).must_equal "0"
+      $vim.echo(%(&modifiable)).must_equal "1"
     end
   end
 
@@ -303,6 +305,8 @@ describe "Autoloaded" do
       bufname = File.realpath($vim.echo(%(bufname("%"))))
       bufname.must_equal File.join(@dir, "other.js")
       $vim.echo(%(tabpagenr("$"))).must_equal "2"
+      $vim.echo(%(&readonly)).must_equal "0"
+      $vim.echo(%(&modifiable)).must_equal "1"
     end
   end
 
@@ -394,6 +398,27 @@ describe "Autoloaded" do
       $vim.command "Nedit ./other"
       bufname = File.realpath($vim.echo(%(bufname("%"))))
       bufname.must_equal File.join(@dir, "other.js")
+    end
+
+    it "must edit ./other.js in non-readonly mode" do
+      touch File.join(@dir, "other.js")
+      Dir.mkdir File.join(@dir, "lib")
+      $vim.edit File.join(@dir, "lib", "CHANGELOG.txt")
+      $vim.command "Nedit ./other"
+      bufname = File.realpath($vim.echo(%(bufname("%"))))
+      bufname.must_equal File.join(@dir, "other.js")
+      $vim.echo(%(&readonly)).must_equal "0"
+      $vim.echo(%(&modifiable)).must_equal "1"
+    end
+
+    it "must edit core modules in readonly mode" do
+      Dir.mkdir File.join(@dir, "lib")
+      $vim.edit File.join(@dir, "lib", "CHANGELOG.txt")
+      $vim.command "Nedit fs"
+      bufname = $vim.echo(%(bufname("%")))
+      bufname.must_match /https?:/
+      $vim.echo(%(&readonly)).must_equal "1"
+      $vim.echo(%(&modifiable)).must_equal "0"
     end
 
     it "must edit ./index.js given ." do
