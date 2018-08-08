@@ -54,6 +54,8 @@ function! s:edit(name, from, ...)
 	" If just a plain filename with no directory part, check if it exists:
 	if a:name !~# '^\v(/|\./|\.\./)' && filereadable(dir . "/" . a:name)
 		let path = dir . "/" . a:name
+	elseif a:name =~# '^\w\+:\/\/'
+		let path = a:name
 	else
 		let path = node#lib#find(a:name, dir)
 	end
