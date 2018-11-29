@@ -194,6 +194,14 @@ describe "Lib" do
       find(".").must_equal target
     end
 
+    it "must return node_modules/foo/index.js given foo in packages/bar/index.js" do
+      target = touch File.join(@dir, "node_modules", "foo", "index.js")
+      touch File.join(@dir, "node_modules", "foo", "package.json"), JSON.dump(:main => "")
+      touch File.join(@dir, "packages", "bar", "package.json")
+      $vim.edit File.join(@dir, "packages", "bar", "index.js")
+      find("foo").must_equal target
+    end
+
     it "must return node_modules/foo/index.js given foo" do
       index = File.join(@dir, "node_modules", "foo", "index.js")
       touch index
