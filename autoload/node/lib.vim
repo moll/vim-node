@@ -53,7 +53,25 @@ function! s:resolve(path)
 		if !empty(path_with_suffix) | return path_with_suffix | endif
 	endif
 
-	if isdirectory(a:path) | return s:resolveFromDirectory(a:path) | endif
+	if isdirectory(a:path)
+		return s:resolveFromDirectory(a:path)
+	else
+		" If we're looking for a module in node_modules and it can't
+		" be found, Node will also try searching for it in parent
+		" directories.
+		let modulename = fnamemodify(a:path, ":t")
+		let parentname = fnamemodify(a:path, ":h:t")
+		if parentname == "node_modules"
+			let root = fnamemodify(a:path, ":h:h:h")
+			while 1
+				let dir = l:root . "/node_modules/" . l:modulename
+				if isdirectory(l:dir) | return s:resolveFromDirectory(l:dir) | endif
+				let parent = fnamemodify(root, ":h")
+				if l:parent == l:root | break | endif
+				let root = l:parent
+			endwhile
+		endif
+	endif
 endfunction
 
 function! s:resolveFromDirectory(path)
