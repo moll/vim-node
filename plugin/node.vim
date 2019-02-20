@@ -1,8 +1,7 @@
 if exists("g:loaded_node") || &cp || v:version < 700 | finish | endif
 let g:loaded_node = 1
 
-let s:filetypes = ["javascript", "json", "jsx"]
-if exists("g:node_filetypes") | let s:filetypes = g:node_filetypes | endif
+let s:filetypes = get(g:, 'node_filetypes', ["javascript", "json", "jsx"])
 
 function! s:detect(dir)
 	if exists("b:node_root") | return | endif
@@ -20,28 +19,15 @@ function! s:detect(dir)
 	endwhile
 endfunction
 
-function! s:permutate(ft)
-	" Don't know right now how to detect javascript.jsx and other permutations
-	" without precomputing them in advance. Please let me know if you do.
-	return [a:ft, a:ft . ".*", "*." . a:ft, "*." . a:ft . ".*"]
-endfunction
-
-function! s:flatten(list)
-	let values = []
-	for value in a:list
-		if type(value) == type([]) | call extend(values, value)
-		else | add(values, value)
-		endif
-	endfor
-	return values
-endfunction
-
 augroup Node
 	au!
 	au VimEnter * if empty(expand("<amatch>")) | call s:detect(getcwd()) | endif
 	au BufRead,BufNewFile * call s:detect(expand("<amatch>:p"))
 
-	let s:filetype_patterns = s:flatten(map(s:filetypes, "<SID>permutate(v:val)"))
-	let s:filetype_patterns_joined = join(s:filetype_patterns, ",")
-	execute "au FileType " s:filetype_patterns_joined " call node#javascript()"
+    let s:joined_filetypes = join(s:filetypes, ',')
+    " Match multiple patterns of filetypes
+	execute "au FileType {" . s:joined_filetypes . "} call node#javascript()"
+	execute "au FileType *.{" . s:joined_filetypes . "} call node#javascript()"
+	execute "au FileType {" . s:joined_filetypes . "}.* call node#javascript()"
+	execute "au FileType *.{" . s:joined_filetypes . "}.* call node#javascript()"
 augroup end
