@@ -39,14 +39,14 @@ function! node#lib#find(name, from)
 	let request = s:getModulePath(a:name, a:from)
 	if !empty(request)
 		let asFile = s:loadAsFile(request)
-		if !empty(asFile) | return asFile | endif
+		if !empty(asFile) | return resolve(asFile) | endif
 
 		let asDirectory = s:loadAsDirectory(request)
-		if !empty(asDirectory) | return asDirectory | endif
+		if !empty(asDirectory) | return resolve(asDirectory) | endif
 	endif
 
 	let asNodeModule = s:loadNodeModules(a:name, s:dirname(a:from))
-	if !empty(asNodeModule) | return asNodeModule | endif
+	if !empty(asNodeModule) | return resolve(asNodeModule) | endif
 endfunction
 
 " LOAD_AS_FILE(X)
