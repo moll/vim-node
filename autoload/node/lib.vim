@@ -78,7 +78,14 @@ function! s:resolveFromDirectory(path)
 	" from the directory defaulting to ./index.js or it was the package.json
 	" which referred to ./index, which in itself could mean both ./index.js and
 	" ./index/index.js.
-	return s:resolveSuffix(a:path . "/index")
+	let l:res = s:resolveSuffix(a:path . "/index")
+	if !l:res
+		let l:list = split(a:path, "/")
+		let l:dirname = l:list[-1]
+		" tring to resolve Component/Component.js
+		let l:res = s:resolveSuffix(a:path . "/" . l:dirname)
+	endif
+	return l:res
 endfunction
 
 function! s:mainFromPackage(path)
