@@ -47,7 +47,7 @@ GEM
     rb-kqueue (0.2.0)
       ffi (>= 0.5.0)
     slop (3.4.6)
-    thor (0.18.1)
+    thor (1.4.0)
 
 PLATFORMS
   ruby
